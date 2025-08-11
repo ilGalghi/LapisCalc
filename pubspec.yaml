@@ -40,19 +40,29 @@ dev_dependencies:
 flutter:
 
   generate: true
+  # Configurazione localizzazione personalizzata
+  l10n:
+    synthetic-package: false
+    arb-dir: lib/l10n
+    template-arb-file: app_en.arb
+    output-localization-file: app_localizations.dart
+    untranslated-messages-file: lib/l10n/untranslated_messages.txt
   uses-material-design: true
   assets:
-    - assets/github-mark-white.svg
-    - assets/github-mark.svg
+    # Icone UI
+    - assets/icons/ui/
+    # Immagini (se necessarie in futuro)
+    - assets/images/
+  
   fonts:
     - family: Manrope
       fonts:
-        - asset: fonts/Manrope/Manrope-Regular.ttf
+        - asset: assets/fonts/Manrope/Manrope-Regular.ttf
 
 
 flutter_launcher_icons:
   android: true
-  image_path: "launcher_icon_fg.png"
+  image_path: "assets/icons/app/launcher_icon_fg.png"
   min_sdk_android: 21
   web:
   generate: true
@@ -60,8 +70,8 @@ flutter_launcher_icons:
   theme_color: "#hexcode"
   windows:
     generate: true
-    image_path: "path/to/image.png"
+    image_path: "assets/icons/app/launcher_icon.png"
     icon_size: 48 # min:48, max:256, default: 48
   macos:
     generate: true
-    image_path: "path/to/image.png"
+    image_path: "assets/icons/app/launcher_icon.png"

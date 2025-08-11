@@ -518,8 +518,8 @@ class _AboutState extends State<About> {
               ListTile(
                 leading: SvgPicture.asset(
                   Theme.of(context).brightness == Brightness.light
-                      ? "assets/github-mark.svg"
-                      : "assets/github-mark-white.svg",
+                      ? "assets/icons/ui/github-mark.svg"
+                      : "assets/icons/ui/github-mark-white.svg",
                   semanticsLabel: 'Github',
                   height: 24,
                   width: 24,

@@ -1,6 +1,6 @@
 # LapisCalc
 <div align="center">
-  <img src="launcher_icon_sq.png" height="100"/>
+  <img src="/assets/launcher_icon_sq.png" height="100"/>
 </div>
 <h1 align="center"">LapisCalc</h1>
 
