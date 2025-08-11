@@ -27,6 +27,12 @@ LapisCalc is a versatile Android application that combines the functionality of 
 
 </div>
 
+## 📸 Screenshots
+
+| Standard Calculator | Unit Converter | Date Calculator |
+|:------------------:|:--------------:|:---------------:|
+| ![Calculator](metadata/screenshots/phone/1.png) | ![Converter](metadata/screenshots/phone/2.png) | ![Date](metadata/screenshots/phone/3.png) |
+
 ## ✨ Key Features
 
 ### 🧮 Calculator
@@ -58,11 +64,7 @@ LapisCalc is a versatile Android application that combines the functionality of 
 
 
 
-## 📸 Screenshots
 
-| Standard Calculator | Unit Converter | Date Calculator |
-|:------------------:|:--------------:|:---------------:|
-| ![Calculator](metadata/en-US/images/phoneScreenshots/1.png) | ![Converter](metadata/en-US/images/phoneScreenshots/2.png) | ![Date](metadata/en-US/images/phoneScreenshots/3.png) |
 
 ## 🛠️ Technologies Used
 
