@@ -40,13 +40,6 @@ dev_dependencies:
 flutter:
 
   generate: true
-  # Configurazione localizzazione personalizzata
-  l10n:
-    synthetic-package: false
-    arb-dir: lib/l10n
-    template-arb-file: app_en.arb
-    output-localization-file: app_localizations.dart
-    untranslated-messages-file: lib/l10n/untranslated_messages.txt
   uses-material-design: true
   assets:
     # Icone UI
@@ -65,9 +58,9 @@ flutter_launcher_icons:
   image_path: "assets/icons/app/launcher_icon_fg.png"
   min_sdk_android: 21
   web:
-  generate: true
-  background_color: "#002fc3"
-  theme_color: "#hexcode"
+    generate: true
+    background_color: "#002fc3"
+    theme_color: "#hexcode"
   windows:
     generate: true
     image_path: "assets/icons/app/launcher_icon.png"
