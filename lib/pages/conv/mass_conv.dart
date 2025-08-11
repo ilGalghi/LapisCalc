@@ -10,7 +10,7 @@ import '../../models/settings_model.dart';
 import '../settings_page.dart';
 
 class MassConv extends StatefulWidget {
-  const MassConv({Key? key}) : super(key: key);
+  const MassConv({super.key});
   static String pageTitle = "Mass";
 
   @override
@@ -336,122 +336,126 @@ class _MassConvState extends State<MassConv> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label: unit.name.toString().split("MASS.").last.capitalize(),
-                );
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label: unit.name.toString().split("MASS.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedMassA,
+              onSelected: (value) {
+                setState(() {
+                  selectedMassA = value;
+                });
+                if (inputAFN.hasFocus) {
+                  if (inputA.text.isNotEmpty) {
+                    mass.convert(value, double.parse(inputA.text));
+                    units = mass.getAll();
+                    _convValueBuild(units);
+                    inputB.text = unitDetails[selectedMassB] ?? "";
+                  }
+                } else if (inputBFN.hasFocus) {
+                  if (inputB.text.isNotEmpty) {
+                    mass.convert(selectedMassB, double.parse(inputB.text));
+                    units = mass.getAll();
+                    _convValueBuild(units);
+                    inputA.text = unitDetails[value] ?? "";
+                  }
+                }
               },
             ),
-            initialSelection: selectedMassA,
-            onSelected: (value) {
-              setState(() {
-                selectedMassA = value;
-              });
-              if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  mass.convert(value, double.parse(inputA.text));
-                  units = mass.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[selectedMassB] ?? "";
-                }
-              } else if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  mass.convert(selectedMassB, double.parse(inputB.text));
-                  units = mass.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[value] ?? "";
-                }
-              }
-            },
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedMassSymbolA.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedMassSymbolA.toString(),
+              ),
+              controller: inputA,
+              focusNode: inputAFN,
+              onChanged: (value) {
+                if (inputAFN.hasFocus) {
+                  _conv(selectedMassA, value, inputB);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputA,
-            focusNode: inputAFN,
-            onChanged: (value) {
-              if (inputAFN.hasFocus) {
-                _conv(selectedMassA, value, inputB);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
           const Divider(),
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label: unit.name.toString().split("MASS.").last.capitalize(),
-                );
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label: unit.name.toString().split("MASS.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedMassB,
+              onSelected: (value) {
+                setState(() {
+                  selectedMassB = value;
+                });
+                if (inputBFN.hasFocus) {
+                  if (inputB.text.isNotEmpty) {
+                    mass.convert(value, double.parse(inputB.text));
+                    units = mass.getAll();
+                    _convValueBuild(units);
+                    inputA.text = unitDetails[selectedMassA] ?? "";
+                  }
+                } else if (inputAFN.hasFocus) {
+                  if (inputA.text.isNotEmpty) {
+                    mass.convert(selectedMassA, double.parse(inputA.text));
+                    units = mass.getAll();
+                    _convValueBuild(units);
+                    inputB.text = unitDetails[value] ?? "";
+                  }
+                }
               },
             ),
-            initialSelection: selectedMassB,
-            onSelected: (value) {
-              setState(() {
-                selectedMassB = value;
-              });
-              if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  mass.convert(value, double.parse(inputB.text));
-                  units = mass.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[selectedMassA] ?? "";
-                }
-              } else if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  mass.convert(selectedMassA, double.parse(inputA.text));
-                  units = mass.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[value] ?? "";
-                }
-              }
-            },
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedMassSymbolB.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedMassSymbolB.toString(),
+              ),
+              controller: inputB,
+              focusNode: inputBFN,
+              onChanged: (value) {
+                if (inputBFN.hasFocus) {
+                  _conv(selectedMassB, value, inputA);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputB,
-            focusNode: inputBFN,
-            onChanged: (value) {
-              if (inputBFN.hasFocus) {
-                _conv(selectedMassB, value, inputA);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
         ],
       ),

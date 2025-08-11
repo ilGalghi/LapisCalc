@@ -45,3 +45,76 @@ app.*.map.json
 
 *.jks
 /android/key.properties
+
+# iOS related
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Runner.app/
+**/ios/Runner.ipa/
+**/ios/DerivedData/
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Web related
+/build/
+**/build/web/
+
+# Windows related
+**/windows/flutter/generated_plugin_registrant.cc
+**/windows/flutter/generated_plugin_registrant.h
+**/windows/flutter/generated_plugins.cmake
+
+# Linux related  
+**/linux/flutter/generated_plugin_registrant.cc
+**/linux/flutter/generated_plugin_registrant.h
+**/linux/flutter/generated_plugins.cmake
+
+# macOS related
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+**/macos/Flutter/Flutter-Debug.xcconfig
+**/macos/Flutter/Flutter-Release.xcconfig
+
+# Coverage reports
+coverage/
+*.lcov
+/coverage/lcov.info
+
+# Build and cache files
+*.lock
+**/.metadata
+/macos/Runner.xcworkspace/xcshareddata/
+.flutter-plugins-dependencies
+
+# Generated files
+**/*.g.dart
+**/*.freezed.dart
+**/*.mocks.dart
+**/generated/
+/lib/generated/
+/test/.test_coverage.dart
+
+# Local configuration files
+.env
+.env.local
+.env.*.local
+
+# Firebase
+**/google-services.json
+**/GoogleService-Info.plist
+.firebase/
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+
+# Temporary files
+*.tmp
+*.temp

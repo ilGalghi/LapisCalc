@@ -10,7 +10,7 @@ import '../../models/settings_model.dart';
 import '../settings_page.dart';
 
 class PowerConv extends StatefulWidget {
-  const PowerConv({Key? key}) : super(key: key);
+  const PowerConv({super.key});
   static String pageTitle = "Power";
 
   @override
@@ -336,122 +336,130 @@ class _PowerConvState extends State<PowerConv> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label: unit.name.toString().split("POWER.").last.capitalize(),
-                );
-              },
-            ),
-            initialSelection: selectedpowerA,
-            onSelected: (value) {
-              setState(() {
-                selectedpowerA = value;
-              });
-              if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  power.convert(value, double.parse(inputA.text));
-                  units = power.getAll();
+        Expanded(
+          child: DropdownMenu(
+                dropdownMenuEntries: List.generate(
+                  units.length,
+                  growable: false,
+                  (index) {
+                    var unit = units[index];
+                    return DropdownMenuEntry(
+                      value: unit.name,
+                      label: unit.name.toString().split("POWER.").last.capitalize(),
+                    );
+                  },
+                ),
+                initialSelection: selectedpowerA,
+                onSelected: (value) {
+                  setState(() {
+                    selectedpowerA = value;
+                  });
+                  if (inputAFN.hasFocus) {
+                    if (inputA.text.isNotEmpty) {
+                      power.convert(value, double.parse(inputA.text));
+                      units = power.getAll();
 
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[selectedpowerB] ?? "";
-                }
-              } else if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  power.convert(selectedpowerB, double.parse(inputB.text));
-                  units = power.getAll();
+                      _convValueBuild(units);
+                      inputB.text = unitDetails[selectedpowerB] ?? "";
+                    }
+                  } else if (inputBFN.hasFocus) {
+                    if (inputB.text.isNotEmpty) {
+                      power.convert(selectedpowerB, double.parse(inputB.text));
+                      units = power.getAll();
 
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[value] ?? "";
-                }
-              }
-            },
+                      _convValueBuild(units);
+                      inputA.text = unitDetails[value] ?? "";
+                    }
+                  }
+                },
+              ),
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedpowerSymbolA.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedpowerSymbolA.toString(),
+              ),
+              controller: inputA,
+              focusNode: inputAFN,
+              onChanged: (value) {
+                if (inputAFN.hasFocus) {
+                  _conv(selectedpowerA, value, inputB);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputA,
-            focusNode: inputAFN,
-            onChanged: (value) {
-              if (inputAFN.hasFocus) {
-                _conv(selectedpowerA, value, inputB);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
           const Divider(),
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label: unit.name.toString().split("POWER.").last.capitalize(),
-                );
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label: unit.name.toString().split("POWER.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedpowerB,
+              onSelected: (value) {
+                setState(() {
+                  selectedpowerB = value;
+                });
+                if (inputBFN.hasFocus) {
+                  if (inputB.text.isNotEmpty) {
+                    power.convert(value, double.parse(inputB.text));
+                    units = power.getAll();
+
+                    _convValueBuild(units);
+                    inputA.text = unitDetails[selectedpowerA] ?? "";
+                  }
+                } else if (inputAFN.hasFocus) {
+                  if (inputA.text.isNotEmpty) {
+                    power.convert(selectedpowerA, double.parse(inputA.text));
+                    units = power.getAll();
+
+                    _convValueBuild(units);
+                    inputB.text = unitDetails[value] ?? "";
+                  }
+                }
               },
             ),
-            initialSelection: selectedpowerB,
-            onSelected: (value) {
-              setState(() {
-                selectedpowerB = value;
-              });
-              if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  power.convert(value, double.parse(inputB.text));
-                  units = power.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[selectedpowerA] ?? "";
-                }
-              } else if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  power.convert(selectedpowerA, double.parse(inputA.text));
-                  units = power.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[value] ?? "";
-                }
-              }
-            },
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedpowerSymbolB.toString(),
+          Expanded(
+          child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedpowerSymbolB.toString(),
+              ),
+              controller: inputB,
+              focusNode: inputBFN,
+              onChanged: (value) {
+                if (inputBFN.hasFocus) {
+                  _conv(selectedpowerB, value, inputA);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputB,
-            focusNode: inputBFN,
-            onChanged: (value) {
-              if (inputBFN.hasFocus) {
-                _conv(selectedpowerB, value, inputA);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
         ],
       ),

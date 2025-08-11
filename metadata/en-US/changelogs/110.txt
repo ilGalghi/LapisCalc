@@ -1,2 +1,0 @@
- - Bug fixes
- - Optimized for landscape orientation and larger device

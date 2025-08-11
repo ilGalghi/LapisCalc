@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lapiscalc/l10n/app_localizations.dart';
 
 class DateCalc extends StatefulWidget {
-  const DateCalc({Key? key}) : super(key: key);
+  const DateCalc({super.key});
   static String pageTitle = "Date";
 
   @override
   State<DateCalc> createState() => _DateCalcState();
 }
 
+//TABBAR -----------------------------------------------------------------------
 class _DateCalcState extends State<DateCalc>
     with AutomaticKeepAliveClientMixin<DateCalc> {
   final List<Widget> _pages = [const BuildDateDiff(), const AddSubdays()];
@@ -20,12 +22,12 @@ class _DateCalcState extends State<DateCalc>
       length: _pages.length,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: const TabBar(tabs: [
+        appBar: TabBar(tabs: [
           Tab(
-            text: "Date Difference",
+            text: AppLocalizations.of(context)!.datedifference
           ),
           Tab(
-            text: "Add/Subtract Days",
+            text: AppLocalizations.of(context)!.addsubtractdays
           )
         ]),
         body: SafeArea(child: TabBarView(children: _pages)),
@@ -99,24 +101,30 @@ class _BuildDateDiffState extends State<BuildDateDiff>
 
     String result = '';
     if (years > 0) {
-      result += '${years.toString()} ${years == 1 ? 'year' : 'years'}';
+      result += '${years.toString()} ${years == 1 ? (AppLocalizations.of(context)!.year) : (AppLocalizations.of(context)!.years)}';
     }
     if (months > 0) {
       result +=
-          '${result.isNotEmpty ? ', ' : ''}${months.toString()} ${months == 1 ? 'month' : 'months'}';
+          '${result.isNotEmpty ? ', ' : ''}${months.toString()} ${months == 1 ? (AppLocalizations.of(context)!.month) : (AppLocalizations.of(context)!.months)}';
     }
     if (weeks > 0) {
       result +=
-          '${result.isNotEmpty ? ', ' : ''}${weeks.toString()} ${weeks == 1 ? 'week' : 'weeks'}';
+          '${result.isNotEmpty ? ', ' : ''}${weeks.toString()} ${weeks == 1 ? (AppLocalizations.of(context)!.week) : (AppLocalizations.of(context)!.weeks)}';
     }
     if (days > 0) {
       result +=
-          '${result.isNotEmpty ? ', ' : ''}${days.toString()} ${days == 1 ? 'day' : 'days'}';
+          '${result.isNotEmpty ? ', ' : ''}${days.toString()} ${days == 1 ? (AppLocalizations.of(context)!.day) : (AppLocalizations.of(context)!.days)}';
     }
 
-    return result;
+    if (weeks > 0 || months > 0 || years > 0) {
+      return "$result (${daysBetween(selectedDate1, selectedDate2)~/86400000}  ${AppLocalizations.of(context)!.days})";
+    }
+    else{
+      return result;
+    }
   }
 
+  // SEZIONE "FROM - TO" -------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -127,19 +135,19 @@ class _BuildDateDiffState extends State<BuildDateDiff>
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("From"),
+            Text(AppLocalizations.of(context)!.from, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(
               height: 8,
             ),
             InkWell(
               child: Chip(
                   label: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Icon(Icons.date_range_outlined),
-                  Text(DateFormat.yMMMd().format(selectedDate1).toString()),
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.date_range_outlined),
+                    Text(DateFormat.yMMMd().format(selectedDate1).toString()),
                 ],
               )),
               onTap: () => _selectDate1(context),
@@ -147,19 +155,19 @@ class _BuildDateDiffState extends State<BuildDateDiff>
             const SizedBox(
               height: 36,
             ),
-            const Text("To"),
+            Text(AppLocalizations.of(context)!.to, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(
               height: 8,
             ),
             InkWell(
               child: Chip(
                   label: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.date_range_outlined),
-                  Text(DateFormat.yMMMd().format(selectedDate2).toString()),
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.date_range_outlined),
+                    Text(DateFormat.yMMMd().format(selectedDate2).toString()),
                 ],
               )),
               onTap: () => _selectDate2(context),
@@ -167,20 +175,20 @@ class _BuildDateDiffState extends State<BuildDateDiff>
             const SizedBox(
               height: 36,
             ),
-            const Text("Difference"),
+            Text(AppLocalizations.of(context)!.difference, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(
               height: 8,
             ),
             selectedDate1.difference(selectedDate2).inMilliseconds == 0
-                ? const Text(
-                    "Same day",
-                    style: TextStyle(fontSize: 36),
+                ? Text(
+                    AppLocalizations.of(context)!.sameday,
+                    style: const TextStyle(fontSize: 36),
                   )
                 : Text(
                     formatMilliseconds(
                         daysBetween(selectedDate1, selectedDate2)),
-                    style: const TextStyle(fontSize: 36),
-                  )
+                        style: const TextStyle(fontSize: 36),
+                    )
           ],
         ),
       ),
@@ -219,6 +227,7 @@ class _AddSubdaysState extends State<AddSubdays>
     }
   }
 
+  //AGGIUNTA E SOTTRAZIONE DELLA DATA ------------------------------------------
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -229,19 +238,19 @@ class _AddSubdaysState extends State<AddSubdays>
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("From"),
+            Text(AppLocalizations.of(context)!.from, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(
               height: 8,
             ),
             InkWell(
               child: Chip(
                   label: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Icon(Icons.date_range_outlined),
-                  Text(DateFormat.yMMMd().format(fromDate).toString()),
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                   const Icon(Icons.date_range_outlined),
+                   Text(DateFormat.yMMMd(Localizations.localeOf(context).languageCode).format(fromDate).toString()),
                 ],
               )),
               onTap: () => _selectDate(context),
@@ -271,7 +280,7 @@ class _AddSubdaysState extends State<AddSubdays>
                           ),
                       growable: false),
                   initialSelection: 0,
-                  label: const Text("Year"),
+                  label: Text(AppLocalizations.of(context)!.yearM),
                   onSelected: (value) => setState(() {
                     newSelectedYear = value!;
                   }),
@@ -291,7 +300,7 @@ class _AddSubdaysState extends State<AddSubdays>
                           ),
                       growable: false),
                   initialSelection: 0,
-                  label: const Text("Month"),
+                  label: Text(AppLocalizations.of(context)!.monthM),
                   onSelected: (value) => setState(() {
                     newSelectedMonth = value!;
                   }),
@@ -311,13 +320,15 @@ class _AddSubdaysState extends State<AddSubdays>
                           ),
                       growable: false),
                   initialSelection: 0,
-                  label: const Text("Day"),
+                  label: Text(AppLocalizations.of(context)!.dayM),
                   onSelected: (value) => setState(() {
                     newSelectedDay = value!;
                   }),
                 ),
               ],
             ),
+
+            //ADDIZIONE
             GridView(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2),
@@ -327,30 +338,50 @@ class _AddSubdaysState extends State<AddSubdays>
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Adding:"),
                     Text(
-                      DateFormat.yMMMd()
+                      AppLocalizations.of(context)!.adding,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      DateFormat('EEEE', Localizations.localeOf(context).languageCode)
                           .format(DateTime(
-                              fromDate.year + newSelectedYear,
-                              fromDate.month + newSelectedMonth,
-                              fromDate.day + newSelectedDay))
-                          .toString(),
+                          fromDate.year + newSelectedYear,
+                          fromDate.month + newSelectedMonth,
+                          fromDate.day + newSelectedDay)),
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                    Text(
+                      DateFormat('d MMM y', Localizations.localeOf(context).languageCode)
+                          .format(DateTime(
+                          fromDate.year + newSelectedYear,
+                          fromDate.month + newSelectedMonth,
+                          fromDate.day + newSelectedDay)),
                       style: const TextStyle(fontSize: 24),
                     ),
                   ],
                 ),
+
+                //SOTTRAZIONE
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Subtracting:"),
+                    Text(AppLocalizations.of(context)!.subtracting,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                     Text(
-                      DateFormat.yMMMd()
+                      DateFormat('EEEE', Localizations.localeOf(context).languageCode)
                           .format(DateTime(
-                              fromDate.year - newSelectedYear,
-                              fromDate.month - newSelectedMonth,
-                              fromDate.day - newSelectedDay))
-                          .toString(),
+                          fromDate.year - newSelectedYear,
+                          fromDate.month - newSelectedMonth,
+                          fromDate.day - newSelectedDay)),
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                    Text(
+                      DateFormat('d MMM y', Localizations.localeOf(context).languageCode)
+                          .format(DateTime(
+                          fromDate.year - newSelectedYear,
+                          fromDate.month - newSelectedMonth,
+                          fromDate.day - newSelectedDay)),
                       style: const TextStyle(fontSize: 24),
                     ),
                   ],

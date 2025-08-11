@@ -10,7 +10,7 @@ import '../../models/settings_model.dart';
 import '../settings_page.dart';
 
 class TimeConv extends StatefulWidget {
-  const TimeConv({Key? key}) : super(key: key);
+  const TimeConv({super.key});
   static String pageTitle = "Time";
 
   @override
@@ -336,127 +336,114 @@ class _TimeConvState extends State<TimeConv> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label: unit.name.toString().split("TIME.").last.capitalize(),
-                );
-              },
-            ),
-            initialSelection: selectedtimeA,
-            onSelected: (value) {
-              setState(() {
-                selectedtimeA = value;
-              });
-              if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label: unit.name.toString().split("TIME.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedtimeA,
+              onSelected: (value) {
+                setState(() {
+                  selectedtimeA = value;
+                });
+                if (inputAFN.hasFocus && inputA.text.isNotEmpty) {
                   time.convert(value, double.parse(inputA.text));
                   units = time.getAll();
-
                   _convValueBuild(units);
                   inputB.text = unitDetails[selectedtimeB] ?? "";
                 }
-              } else if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  time.convert(selectedtimeB, double.parse(inputB.text));
-                  units = time.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[value] ?? "";
-                }
-              }
-            },
-          ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedtimeSymbolA.toString(),
-            ),
-            controller: inputA,
-            focusNode: inputAFN,
-            onChanged: (value) {
-              if (inputAFN.hasFocus) {
-                _conv(selectedtimeA, value, inputB);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
-          ),
-          const Divider(),
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label: unit.name.toString().split("TIME.").last.capitalize(),
-                );
               },
             ),
-            initialSelection: selectedtimeB,
-            onSelected: (value) {
-              setState(() {
-                selectedtimeB = value;
-              });
-              if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
+          ),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedtimeSymbolA.toString(),
+              ),
+              controller: inputA,
+              focusNode: inputAFN,
+              onChanged: (value) {
+                if (inputAFN.hasFocus) {
+                  _conv(selectedtimeA, value, inputB);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
+            ),
+          ),
+          const Divider(),
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label: unit.name.toString().split("TIME.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedtimeB,
+              onSelected: (value) {
+                setState(() {
+                  selectedtimeB = value;
+                });
+                if (inputBFN.hasFocus && inputB.text.isNotEmpty) {
                   time.convert(value, double.parse(inputB.text));
                   units = time.getAll();
-
                   _convValueBuild(units);
                   inputA.text = unitDetails[selectedtimeA] ?? "";
                 }
-              } else if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  time.convert(selectedtimeA, double.parse(inputA.text));
-                  units = time.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[value] ?? "";
-                }
-              }
-            },
+              },
+            ),
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedtimeSymbolB.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedtimeSymbolB.toString(),
+              ),
+              controller: inputB,
+              focusNode: inputBFN,
+              onChanged: (value) {
+                if (inputBFN.hasFocus) {
+                  _conv(selectedtimeB, value, inputA);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputB,
-            focusNode: inputBFN,
-            onChanged: (value) {
-              if (inputBFN.hasFocus) {
-                _conv(selectedtimeB, value, inputA);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
         ],
       ),
     );
   }
+
 
   Widget _buildButtons(String label, bool tonal) {
     return tonal

@@ -10,7 +10,7 @@ import '../../models/settings_model.dart';
 import '../settings_page.dart';
 
 class LengthConv extends StatefulWidget {
-  const LengthConv({Key? key}) : super(key: key);
+  const LengthConv({super.key});
   static String pageTitle = "Length";
 
   @override
@@ -337,8 +337,9 @@ class _LengthConvState extends State<LengthConv> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
               units.length,
               growable: false,
               (index) {
@@ -373,8 +374,10 @@ class _LengthConvState extends State<LengthConv> {
                 }
               }
             },
+            ),
           ),
-          TextField(
+          Expanded(
+          child: TextField(
             enableSuggestions: false,
             textAlign: TextAlign.right,
             decoration: InputDecoration(
@@ -396,8 +399,10 @@ class _LengthConvState extends State<LengthConv> {
             ),
             keyboardType: TextInputType.none,
           ),
+          ),
           const Divider(),
-          DropdownMenu(
+          Expanded(
+            child: DropdownMenu(
             dropdownMenuEntries: List.generate(
               units.length,
               growable: false,
@@ -433,8 +438,10 @@ class _LengthConvState extends State<LengthConv> {
                 }
               }
             },
+           ),
           ),
-          TextField(
+          Expanded(
+            child: TextField(
             enableSuggestions: false,
             textAlign: TextAlign.right,
             decoration: InputDecoration(
@@ -455,6 +462,7 @@ class _LengthConvState extends State<LengthConv> {
               fontSize: fontsize,
             ),
             keyboardType: TextInputType.none,
+          ),
           ),
         ],
       ),

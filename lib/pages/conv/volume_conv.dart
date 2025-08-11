@@ -10,7 +10,7 @@ import '../../models/settings_model.dart';
 import '../settings_page.dart';
 
 class VolumeConv extends StatefulWidget {
-  const VolumeConv({Key? key}) : super(key: key);
+  const VolumeConv({super.key});
   static String pageTitle = "Volume";
 
   @override
@@ -336,124 +336,128 @@ class _VolumeConvState extends State<VolumeConv> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label:
-                      unit.name.toString().split("VOLUME.").last.capitalize(),
-                );
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label:
+                    unit.name.toString().split("VOLUME.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedVolumeA,
+              onSelected: (value) {
+                setState(() {
+                  selectedVolumeA = value;
+                });
+                if (inputAFN.hasFocus) {
+                  if (inputA.text.isNotEmpty) {
+                    volume.convert(value, double.parse(inputA.text));
+                    units = volume.getAll();
+                    _convValueBuild(units);
+                    inputB.text = unitDetails[selectedVolumeB] ?? "";
+                  }
+                } else if (inputBFN.hasFocus) {
+                  if (inputB.text.isNotEmpty) {
+                    volume.convert(selectedVolumeB, double.parse(inputB.text));
+                    units = volume.getAll();
+                    _convValueBuild(units);
+                    inputA.text = unitDetails[value] ?? "";
+                  }
+                }
               },
             ),
-            initialSelection: selectedVolumeA,
-            onSelected: (value) {
-              setState(() {
-                selectedVolumeA = value;
-              });
-              if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  volume.convert(value, double.parse(inputA.text));
-                  units = volume.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[selectedVolumeB] ?? "";
-                }
-              } else if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  volume.convert(selectedVolumeB, double.parse(inputB.text));
-                  units = volume.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[value] ?? "";
-                }
-              }
-            },
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedVolumeSymbolA.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedVolumeSymbolA.toString(),
+              ),
+              controller: inputA,
+              focusNode: inputAFN,
+              onChanged: (value) {
+                if (inputAFN.hasFocus) {
+                  _conv(selectedVolumeA, value, inputB);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputA,
-            focusNode: inputAFN,
-            onChanged: (value) {
-              if (inputAFN.hasFocus) {
-                _conv(selectedVolumeA, value, inputB);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
           const Divider(),
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label:
-                      unit.name.toString().split("VOLUME.").last.capitalize(),
-                );
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label:
+                    unit.name.toString().split("VOLUME.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedVolumeB,
+              onSelected: (value) {
+                setState(() {
+                  selectedVolumeB = value;
+                });
+                if (inputBFN.hasFocus) {
+                  if (inputB.text.isNotEmpty) {
+                    volume.convert(value, double.parse(inputB.text));
+                    units = volume.getAll();
+                    _convValueBuild(units);
+                    inputA.text = unitDetails[selectedVolumeA] ?? "";
+                  }
+                } else if (inputAFN.hasFocus) {
+                  if (inputA.text.isNotEmpty) {
+                    volume.convert(selectedVolumeA, double.parse(inputA.text));
+                    units = volume.getAll();
+                    _convValueBuild(units);
+                    inputB.text = unitDetails[value] ?? "";
+                  }
+                }
               },
             ),
-            initialSelection: selectedVolumeB,
-            onSelected: (value) {
-              setState(() {
-                selectedVolumeB = value;
-              });
-              if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  volume.convert(value, double.parse(inputB.text));
-                  units = volume.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[selectedVolumeA] ?? "";
-                }
-              } else if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  volume.convert(selectedVolumeA, double.parse(inputA.text));
-                  units = volume.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[value] ?? "";
-                }
-              }
-            },
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedVolumeSymbolB.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedVolumeSymbolB.toString(),
+              ),
+              controller: inputB,
+              focusNode: inputBFN,
+              onChanged: (value) {
+                if (inputBFN.hasFocus) {
+                  _conv(selectedVolumeB, value, inputA);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputB,
-            focusNode: inputBFN,
-            onChanged: (value) {
-              if (inputBFN.hasFocus) {
-                _conv(selectedVolumeB, value, inputA);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
         ],
       ),

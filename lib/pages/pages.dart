@@ -16,6 +16,7 @@ export './conv/speed_conv.dart';
 export './conv/temp_conv.dart';
 export './conv/time_conv.dart';
 export './conv/volume_conv.dart';
+export './conv/tip_conv.dart';
 
 //General
 export './settings_page.dart';

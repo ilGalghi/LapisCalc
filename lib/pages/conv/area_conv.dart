@@ -10,7 +10,7 @@ import '../../models/settings_model.dart';
 import '../settings_page.dart';
 
 class AreaConv extends StatefulWidget {
-  const AreaConv({Key? key}) : super(key: key);
+  const AreaConv({super.key});
 
   static String pageTitle = "Area";
   @override
@@ -336,122 +336,126 @@ class _AreaConvState extends State<AreaConv> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label: unit.name.toString().split("AREA.").last.capitalize(),
-                );
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label: unit.name.toString().split("AREA.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedareaA,
+              onSelected: (value) {
+                setState(() {
+                  selectedareaA = value;
+                });
+                if (inputAFN.hasFocus) {
+                  if (inputA.text.isNotEmpty) {
+                    area.convert(value, double.parse(inputA.text));
+                    units = area.getAll();
+                    _convValueBuild(units);
+                    inputB.text = unitDetails[selectedareaB] ?? "";
+                  }
+                } else if (inputBFN.hasFocus) {
+                  if (inputB.text.isNotEmpty) {
+                    area.convert(selectedareaB, double.parse(inputB.text));
+                    units = area.getAll();
+                    _convValueBuild(units);
+                    inputA.text = unitDetails[value] ?? "";
+                  }
+                }
               },
             ),
-            initialSelection: selectedareaA,
-            onSelected: (value) {
-              setState(() {
-                selectedareaA = value;
-              });
-              if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  area.convert(value, double.parse(inputA.text));
-                  units = area.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[selectedareaB] ?? "";
-                }
-              } else if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  area.convert(selectedareaB, double.parse(inputB.text));
-                  units = area.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[value] ?? "";
-                }
-              }
-            },
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedareaSymbolA.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedareaSymbolA.toString(),
+              ),
+              controller: inputA,
+              focusNode: inputAFN,
+              onChanged: (value) {
+                if (inputAFN.hasFocus) {
+                  _conv(selectedareaA, value, inputB);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputA,
-            focusNode: inputAFN,
-            onChanged: (value) {
-              if (inputAFN.hasFocus) {
-                _conv(selectedareaA, value, inputB);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
           const Divider(),
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label: unit.name.toString().split("AREA.").last.capitalize(),
-                );
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label: unit.name.toString().split("AREA.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedareaB,
+              onSelected: (value) {
+                setState(() {
+                  selectedareaB = value;
+                });
+                if (inputBFN.hasFocus) {
+                  if (inputB.text.isNotEmpty) {
+                    area.convert(value, double.parse(inputB.text));
+                    units = area.getAll();
+                    _convValueBuild(units);
+                    inputA.text = unitDetails[selectedareaA] ?? "";
+                  }
+                } else if (inputAFN.hasFocus) {
+                  if (inputA.text.isNotEmpty) {
+                    area.convert(selectedareaA, double.parse(inputA.text));
+                    units = area.getAll();
+                    _convValueBuild(units);
+                    inputB.text = unitDetails[value] ?? "";
+                  }
+                }
               },
             ),
-            initialSelection: selectedareaB,
-            onSelected: (value) {
-              setState(() {
-                selectedareaB = value;
-              });
-              if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  area.convert(value, double.parse(inputB.text));
-                  units = area.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[selectedareaA] ?? "";
-                }
-              } else if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  area.convert(selectedareaA, double.parse(inputA.text));
-                  units = area.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[value] ?? "";
-                }
-              }
-            },
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedareaSymbolB.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedareaSymbolB.toString(),
+              ),
+              controller: inputB,
+              focusNode: inputBFN,
+              onChanged: (value) {
+                if (inputBFN.hasFocus) {
+                  _conv(selectedareaB, value, inputA);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputB,
-            focusNode: inputBFN,
-            onChanged: (value) {
-              if (inputBFN.hasFocus) {
-                _conv(selectedareaB, value, inputA);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
         ],
       ),

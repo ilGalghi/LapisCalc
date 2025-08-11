@@ -7,6 +7,16 @@ class SettingsModel extends ChangeNotifier {
   int _sigFig = 7;
   int _customColor = 16777215;
   bool _firstLaunch = true;
+  String _selectedLanguageCode = 'en';
+
+  String get selectedLanguageCode => _selectedLanguageCode;
+
+  set selectedLanguageCode(String value) {
+    if (_selectedLanguageCode == value) return;
+    _selectedLanguageCode = value;
+    notifyListeners();
+    save();
+  }
 
   bool get isSystemColor => _isSystemColor;
   set isSystemColor(bool value) {
@@ -48,6 +58,8 @@ class SettingsModel extends ChangeNotifier {
     save();
   }
 
+
+
   Future<void> save() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('isSystemColor', _isSystemColor);
@@ -55,6 +67,7 @@ class SettingsModel extends ChangeNotifier {
     prefs.setInt('sigFig', _sigFig);
     prefs.setInt('customColor', _customColor);
     prefs.setBool('firstLaunch', _firstLaunch);
+    prefs.setString('selectedLanguageCode', _selectedLanguageCode);
   }
 
   Future<void> load() async {
@@ -67,6 +80,7 @@ class SettingsModel extends ChangeNotifier {
     _sigFig = prefs.getInt('sigFig') ?? 7;
     _customColor = prefs.getInt('customColor') ?? 16777215;
     _firstLaunch = prefs.getBool('firstLaunch') ?? true;
+    _selectedLanguageCode = prefs.getString('selectedLanguageCode') ?? 'en';
     notifyListeners();
   }
 }

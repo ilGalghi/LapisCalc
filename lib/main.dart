@@ -3,26 +3,66 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-
+import 'package:lapiscalc/l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './pages/pages.dart';
 import 'models/settings_model.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final settingsmodel = SettingsModel();
   settingsmodel.load();
 
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider.value(value: settingsmodel),
-  ], child: const MyApp()));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider.value(value: settingsmodel),
+    ],
+    child: const MyApp(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  static void setLocale(BuildContext context, Locale newLocale) {
+    final _MyAppState? state =
+    context.findAncestorStateOfType<_MyAppState>();
+    state?.setLocale(newLocale);
+  }
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale('en');
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedLocale();
+  }
+
+  void _loadSavedLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedLanguage = prefs.getString('selectedLanguageCode');
+    if (savedLanguage != null) {
+      setLocale(Locale(savedLanguage));
+    }
+  }
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     SettingsModel settings = Provider.of<SettingsModel>(context);
+
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -32,16 +72,29 @@ class MyApp extends StatelessWidget {
     ));
 
     final defaultLightColorScheme = ColorScheme.fromSeed(
-        seedColor: const Color.fromARGB(255, 217, 229, 129));
+        seedColor: const Color.fromARGB(255, 17, 75, 243));
 
     final defaultDarkColorScheme = ColorScheme.fromSeed(
-        seedColor: const Color.fromARGB(255, 217, 229, 129),
+        seedColor: const Color.fromARGB(255, 17, 75, 243),
         brightness: Brightness.dark);
 
     return DynamicColorBuilder(
       builder: (lightColorScheme, darkColorScheme) {
         return MaterialApp(
-          title: 'Mint Calc',
+          title: 'Lapis Calc',
+
+          // LINGUE
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: _locale,
+
+
+          // TEMI
           theme: ThemeData(
             colorScheme: settings.isSystemColor
                 ? lightColorScheme
@@ -57,12 +110,15 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           themeMode: settings.themeMode,
+
+          // HOME
           home: const MyHomePage(),
         );
       },
     );
   }
 }
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -74,7 +130,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   static const List _pages = [
     StdCalc(),
-    SciCalc(),
+    //SciCalc(),
     DateCalc(),
     AngleConv(),
     TemperatureConv(),
@@ -88,10 +144,11 @@ class _MyHomePageState extends State<MyHomePage> {
     SpeedConv(),
     PowerConv(),
     EnergyConv(),
+    TipConv(),
   ];
   final _pageTitles = {
     StdCalc: StdCalc.pageTitle,
-    SciCalc: SciCalc.pageTitle,
+    //SciCalc: SciCalc.pageTitle,
     DateCalc: DateCalc.pageTitle,
     AngleConv: AngleConv.pageTitle,
     TemperatureConv: TemperatureConv.pageTitle,
@@ -104,7 +161,8 @@ class _MyHomePageState extends State<MyHomePage> {
     PressureConv: PressureConv.pageTitle,
     SpeedConv: SpeedConv.pageTitle,
     PowerConv: PowerConv.pageTitle,
-    EnergyConv: EnergyConv.pageTitle
+    EnergyConv: EnergyConv.pageTitle,
+    TipConv: TipConv.pageTitle
   };
   int selectedIndex = 0;
 
@@ -131,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(
             onPressed: () =>
-                Navigator.push(context, _createRoute(SettingsPage())),
+                Navigator.push(context, _createRoute(SettingsPage(calculator: const StdCalc()))),
             icon: const Icon(Icons.settings_outlined),
           ),
         ],
@@ -147,82 +205,109 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
             child: Text(
-              'Calculator',
+              (AppLocalizations.of(context)!.calculator),
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.calculate_outlined),
-            selectedIcon: Icon(Icons.calculate),
-            label: Text("Standard"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.calculate_outlined),
+            selectedIcon: const Icon(Icons.calculate),
+            label: Text(AppLocalizations.of(context)!.standard),
           ),
-          const NavigationDrawerDestination(
+
+          /* SEZIONE SCIENTIFICA
+          NavigationDrawerDestination(
             icon: Icon(Icons.science_outlined),
             selectedIcon: Icon(Icons.science),
-            label: Text("Scientific"),
+            label: Text(AppLocalizations.of(context)!.scientific),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.date_range_outlined),
-            selectedIcon: Icon(Icons.date_range),
-            label: Text("Date"),
+          */
+
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.date_range_outlined),
+            selectedIcon: const Icon(Icons.date_range),
+            label: Text(AppLocalizations.of(context)!.date),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
             child: Text(
-              'Converter',
+              AppLocalizations.of(context)!.converter,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.architecture),
-            selectedIcon: Icon(Icons.architecture),
-            label: Text("Angle"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.architecture),
+            selectedIcon: const Icon(Icons.architecture),
+            label: Text(AppLocalizations.of(context)!.angle),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.thermostat),
-            selectedIcon: Icon(Icons.thermostat),
-            label: Text("Temperature"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.thermostat),
+            selectedIcon: const Icon(Icons.thermostat),
+            label: Text(AppLocalizations.of(context)!.temperature),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.sd_card_outlined),
-            selectedIcon: Icon(Icons.sd_card),
-            label: Text("Data"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.sd_card_outlined),
+            selectedIcon: const Icon(Icons.sd_card),
+            label: Text(AppLocalizations.of(context)!.data),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.watch_later_outlined),
-            selectedIcon: Icon(Icons.watch_later),
-            label: Text("Time"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.watch_later_outlined),
+            selectedIcon: const Icon(Icons.watch_later),
+            label: Text(AppLocalizations.of(context)!.time),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.crop),
-            selectedIcon: Icon(Icons.crop),
-            label: Text("Area"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.crop),
+            selectedIcon: const Icon(Icons.crop),
+            label: Text(AppLocalizations.of(context)!.area),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.straighten),
-            selectedIcon: Icon(Icons.straighten),
-            label: Text("Length"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.straighten),
+            selectedIcon: const Icon(Icons.straighten),
+            label: Text(AppLocalizations.of(context)!.length),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.free_breakfast_outlined),
-            selectedIcon: Icon(Icons.free_breakfast),
-            label: Text("Volume"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.free_breakfast_outlined),
+            selectedIcon: const Icon(Icons.free_breakfast),
+            label: Text(AppLocalizations.of(context)!.volume),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.scale_outlined),
-            selectedIcon: Icon(Icons.scale),
-            label: Text("Mass"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.scale_outlined),
+            selectedIcon: const Icon(Icons.scale),
+            label: Text(AppLocalizations.of(context)!.mass),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.speed),
-            selectedIcon: Icon(Icons.speed),
-            label: Text("Pressure"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.speed),
+            selectedIcon: const Icon(Icons.speed),
+            label: Text(AppLocalizations.of(context)!.pressure),
           ),
-          const NavigationDrawerDestination(
-            icon: Icon(Icons.run_circle_outlined),
-            selectedIcon: Icon(Icons.run_circle),
-            label: Text("Speed"),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.run_circle_outlined),
+            selectedIcon: const Icon(Icons.run_circle),
+            label: Text(AppLocalizations.of(context)!.speed),
           ),
+
+          //Power
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.power_outlined),
+            selectedIcon: const Icon(Icons.power_rounded),
+            label: Text(AppLocalizations.of(context)!.power),
+          ),
+
+          //Energy
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.electric_bolt_rounded),
+            selectedIcon: const Icon(Icons.electric_bolt_outlined),
+            label: Text(AppLocalizations.of(context)!.energy),
+          ),
+
+          //Tip
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.monetization_on_outlined),
+            selectedIcon: const Icon(Icons.monetization_on),
+            label: Text(AppLocalizations.of(context)!.tip),
+          ),
+
+
         ],
       ),
     );

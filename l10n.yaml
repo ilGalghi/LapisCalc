@@ -1,0 +1,4 @@
+arb-dir: lib/l10n                 #cartella files
+template-arb-file: app_en.arb     #default template
+output-localization-file: app_localizations.dart  #generation localization file
+untranslated-messages-file: untranslated_messages.txt

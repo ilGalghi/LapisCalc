@@ -10,7 +10,7 @@ import '../../models/settings_model.dart';
 import '../settings_page.dart';
 
 class EnergyConv extends StatefulWidget {
-  const EnergyConv({Key? key}) : super(key: key);
+  const EnergyConv({super.key});
   static String pageTitle = "Energy";
 
   @override
@@ -336,124 +336,132 @@ class _EnergyConvState extends State<EnergyConv> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label:
-                      unit.name.toString().split("ENERGY.").last.capitalize(),
-                );
+          Expanded(             //per correggere "BOTTOM OVERFLOW BY ... PIXELS
+            child: DropdownMenu(
+                dropdownMenuEntries: List.generate(
+                  units.length,
+                  growable: false,
+                  (index) {
+                    var unit = units[index];
+                    return DropdownMenuEntry(
+                      value: unit.name,
+                      label:
+                          unit.name.toString().split("ENERGY.").last.capitalize(),
+                    );
+                  },
+                ),
+                initialSelection: selectedenergyA,
+                onSelected: (value) {
+                  setState(() {
+                    selectedenergyA = value;
+                  });
+                  if (inputAFN.hasFocus) {
+                    if (inputA.text.isNotEmpty) {
+                      energy.convert(value, double.parse(inputA.text));
+                      units = energy.getAll();
+
+                      _convValueBuild(units);
+                      inputB.text = unitDetails[selectedenergyB] ?? "";
+                    }
+                  } else if (inputBFN.hasFocus) {
+                    if (inputB.text.isNotEmpty) {
+                      energy.convert(selectedenergyB, double.parse(inputB.text));
+                      units = energy.getAll();
+
+                      _convValueBuild(units);
+                      inputA.text = unitDetails[value] ?? "";
+                    }
+                  }
+                },
+              ),
+          ),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedenergySymbolA.toString(),
+              ),
+              controller: inputA,
+              focusNode: inputAFN,
+              onChanged: (value) {
+                if (inputAFN.hasFocus) {
+                  _conv(selectedenergyA, value, inputB);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
+            ),
+          ),
+            const Divider(),
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label:
+                        unit.name.toString().split("ENERGY.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedenergyB,
+              onSelected: (value) {
+                setState(() {
+                  selectedenergyB = value;
+                });
+                if (inputBFN.hasFocus) {
+                  if (inputB.text.isNotEmpty) {
+                    energy.convert(value, double.parse(inputB.text));
+                    units = energy.getAll();
+
+                    _convValueBuild(units);
+                    inputA.text = unitDetails[selectedenergyA] ?? "";
+                  }
+                } else if (inputAFN.hasFocus) {
+                  if (inputA.text.isNotEmpty) {
+                    energy.convert(selectedenergyA, double.parse(inputA.text));
+                    units = energy.getAll();
+
+                    _convValueBuild(units);
+                    inputB.text = unitDetails[value] ?? "";
+                  }
+                }
               },
             ),
-            initialSelection: selectedenergyA,
-            onSelected: (value) {
-              setState(() {
-                selectedenergyA = value;
-              });
-              if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  energy.convert(value, double.parse(inputA.text));
-                  units = energy.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[selectedenergyB] ?? "";
-                }
-              } else if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  energy.convert(selectedenergyB, double.parse(inputB.text));
-                  units = energy.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[value] ?? "";
-                }
-              }
-            },
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedenergySymbolA.toString(),
-            ),
-            controller: inputA,
-            focusNode: inputAFN,
-            onChanged: (value) {
-              if (inputAFN.hasFocus) {
-                _conv(selectedenergyA, value, inputB);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
-          ),
-          const Divider(),
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label:
-                      unit.name.toString().split("ENERGY.").last.capitalize(),
-                );
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedenergySymbolB.toString(),
+              ),
+              controller: inputB,
+              focusNode: inputBFN,
+              onChanged: (value) {
+                if (inputBFN.hasFocus) {
+                  _conv(selectedenergyB, value, inputA);
+                }
               },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            initialSelection: selectedenergyB,
-            onSelected: (value) {
-              setState(() {
-                selectedenergyB = value;
-              });
-              if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  energy.convert(value, double.parse(inputB.text));
-                  units = energy.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[selectedenergyA] ?? "";
-                }
-              } else if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  energy.convert(selectedenergyA, double.parse(inputA.text));
-                  units = energy.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[value] ?? "";
-                }
-              }
-            },
-          ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedenergySymbolB.toString(),
-            ),
-            controller: inputB,
-            focusNode: inputBFN,
-            onChanged: (value) {
-              if (inputBFN.hasFocus) {
-                _conv(selectedenergyB, value, inputA);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
         ],
       ),

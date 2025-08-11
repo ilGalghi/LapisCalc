@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SciCalc extends StatelessWidget {
-  const SciCalc({Key? key}) : super(key: key);
+  const SciCalc({super.key});
   static String pageTitle = "Scientific";
 
   @override

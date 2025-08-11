@@ -10,7 +10,7 @@ import '../../models/settings_model.dart';
 import '../settings_page.dart';
 
 class PressureConv extends StatefulWidget {
-  const PressureConv({Key? key}) : super(key: key);
+  const PressureConv({super.key});
   static String pageTitle = "Pressure";
 
   @override
@@ -336,131 +336,134 @@ class _PressureConvState extends State<PressureConv> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label:
-                      unit.name.toString().split("PRESSURE.").last.capitalize(),
-                );
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label:
+                    unit.name.toString().split("PRESSURE.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedpressureA,
+              onSelected: (value) {
+                setState(() {
+                  selectedpressureA = value;
+                });
+                if (inputAFN.hasFocus) {
+                  if (inputA.text.isNotEmpty) {
+                    pressure.convert(value, double.parse(inputA.text));
+                    units = pressure.getAll();
+                    _convValueBuild(units);
+                    inputB.text = unitDetails[selectedpressureB] ?? "";
+                  }
+                } else if (inputBFN.hasFocus) {
+                  if (inputB.text.isNotEmpty) {
+                    pressure.convert(selectedpressureB, double.parse(inputB.text));
+                    units = pressure.getAll();
+                    _convValueBuild(units);
+                    inputA.text = unitDetails[value] ?? "";
+                  }
+                }
               },
             ),
-            initialSelection: selectedpressureA,
-            onSelected: (value) {
-              setState(() {
-                selectedpressureA = value;
-              });
-              if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  pressure.convert(value, double.parse(inputA.text));
-                  units = pressure.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[selectedpressureB] ?? "";
-                }
-              } else if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  pressure.convert(
-                      selectedpressureB, double.parse(inputB.text));
-                  units = pressure.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[value] ?? "";
-                }
-              }
-            },
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedpressureSymbolA.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedpressureSymbolA.toString(),
+              ),
+              controller: inputA,
+              focusNode: inputAFN,
+              onChanged: (value) {
+                if (inputAFN.hasFocus) {
+                  _conv(selectedpressureA, value, inputB);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputA,
-            focusNode: inputAFN,
-            onChanged: (value) {
-              if (inputAFN.hasFocus) {
-                _conv(selectedpressureA, value, inputB);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
           const Divider(),
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label:
-                      unit.name.toString().split("PRESSURE.").last.capitalize(),
-                );
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label:
+                    unit.name.toString().split("PRESSURE.").last.capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selectedpressureB,
+              onSelected: (value) {
+                setState(() {
+                  selectedpressureB = value;
+                });
+                if (inputBFN.hasFocus) {
+                  if (inputB.text.isNotEmpty) {
+                    pressure.convert(value, double.parse(inputB.text));
+                    units = pressure.getAll();
+                    _convValueBuild(units);
+                    inputA.text = unitDetails[selectedpressureA] ?? "";
+                  }
+                } else if (inputAFN.hasFocus) {
+                  if (inputA.text.isNotEmpty) {
+                    pressure.convert(selectedpressureA, double.parse(inputA.text));
+                    units = pressure.getAll();
+                    _convValueBuild(units);
+                    inputB.text = unitDetails[value] ?? "";
+                  }
+                }
               },
             ),
-            initialSelection: selectedpressureB,
-            onSelected: (value) {
-              setState(() {
-                selectedpressureB = value;
-              });
-              if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  pressure.convert(value, double.parse(inputB.text));
-                  units = pressure.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[selectedpressureA] ?? "";
-                }
-              } else if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  pressure.convert(
-                      selectedpressureA, double.parse(inputA.text));
-                  units = pressure.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[value] ?? "";
-                }
-              }
-            },
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selectedpressureSymbolB.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selectedpressureSymbolB.toString(),
+              ),
+              controller: inputB,
+              focusNode: inputBFN,
+              onChanged: (value) {
+                if (inputBFN.hasFocus) {
+                  _conv(selectedpressureB, value, inputA);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputB,
-            focusNode: inputBFN,
-            onChanged: (value) {
-              if (inputBFN.hasFocus) {
-                _conv(selectedpressureB, value, inputA);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
         ],
       ),
     );
   }
+
 
   Widget _buildButtons(String label, bool tonal) {
     return tonal

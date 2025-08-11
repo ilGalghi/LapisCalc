@@ -7,11 +7,17 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StdCalc extends StatefulWidget {
-  const StdCalc({Key? key}) : super(key: key);
+  const StdCalc({super.key});
   static String pageTitle = "Standard";
 
   @override
   State<StdCalc> createState() => _StdCalcState();
+
+  void clearHistory() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove("history_key");
+    // Aggiorna lo stato o esegui altre operazioni necessarie
+  }
 }
 
 class _StdCalcState extends State<StdCalc> {
@@ -21,6 +27,8 @@ class _StdCalcState extends State<StdCalc> {
 
   RegExp bracketsCheck = RegExp(r'(?<=\d)(?=\()|(?<=\))(?=\d)|(?<=\))(?=\()');
   var output = "";
+
+  // HISTORY
   void addToHistory(input, output) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     var historyData = {
@@ -28,14 +36,14 @@ class _StdCalcState extends State<StdCalc> {
       "input": input,
       "output": output,
     };
-    List _history = jsonDecode(prefs.getString("history_key") ?? "[]");
-    if (_history.length >= 20) {
-      _history.removeAt(20);
-      _history.add(historyData);
+    List history0 = jsonDecode(prefs.getString("history_key") ?? "[]");
+    if (history0.length >= 100) {
+      history0.removeAt(0);
+      history0.add(historyData);
     } else {
-      _history.add(historyData);
+      history0.add(historyData);
     }
-    String history = jsonEncode(_history);
+    String history = jsonEncode(history0);
     await prefs.setString("history_key", history);
   }
 
@@ -45,6 +53,8 @@ class _StdCalcState extends State<StdCalc> {
 
     return listHistory;
   }
+
+
 
   void scrollWithCursor(String val) {
     String blankText = "";
@@ -374,8 +384,8 @@ class _StdCalcState extends State<StdCalc> {
         _buildCalcButton("2", false),
         _buildCalcButton("3", false),
         _buildCalcButton("+", true),
-        _buildCalcButton(".", false),
         _buildCalcButton("0", false),
+        _buildCalcButton(".", false),
         FilledButton.tonal(
             onPressed: () {
               _bkspc();
@@ -449,9 +459,12 @@ class _StdCalcState extends State<StdCalc> {
       valb = "-";
     } else if (val == "÷") {
       valb = "/";
+    } else if (val == "%") {
+      valb = "/100*";          // Cambia % con /100 per ottenere la percentuale (sennò fa divisione per intero)
     } else {
       valb = val;
     }
+
     return notTonalButton
         ? FilledButton(
             onPressed: () {

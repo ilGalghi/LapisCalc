@@ -1,4 +1,4 @@
-package bored.codebyk.mintcalc
+package com.ilgalghi.lapiscalc
 
 import android.content.Context
 import android.content.pm.PackageInfo
@@ -12,7 +12,7 @@ import android.os.Build
 
 class MainActivity: FlutterActivity() {
     private var applicationContext: Context? = null
-    private val CHANNEL = "bored.codebyk.mintcalc/androidversion"
+    private val CHANNEL = "com.ilgalghi.lapiscalc/androidversion"
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

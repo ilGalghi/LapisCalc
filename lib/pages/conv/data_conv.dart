@@ -10,7 +10,7 @@ import '../../models/settings_model.dart';
 import '../settings_page.dart';
 
 class DataConv extends StatefulWidget {
-  const DataConv({Key? key}) : super(key: key);
+  const DataConv({super.key});
   static String pageTitle = "Data";
 
   @override
@@ -336,135 +336,122 @@ class _DataConvState extends State<DataConv> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label: unit.name
-                      .toString()
-                      .split("DIGITAL_DATA.")
-                      .last
-                      .capitalize(),
-                );
-              },
-            ),
-            initialSelection: selecteddataA,
-            onSelected: (value) {
-              setState(() {
-                selecteddataA = value;
-              });
-              if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label: unit.name
+                        .toString()
+                        .split("DIGITAL_DATA.")
+                        .last
+                        .capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selecteddataA,
+              onSelected: (value) {
+                setState(() {
+                  selecteddataA = value;
+                });
+                if (inputAFN.hasFocus && inputA.text.isNotEmpty) {
                   data.convert(value, double.parse(inputA.text));
                   units = data.getAll();
-
                   _convValueBuild(units);
                   inputB.text = unitDetails[selecteddataB] ?? "";
                 }
-              } else if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
-                  data.convert(selecteddataB, double.parse(inputB.text));
-                  units = data.getAll();
-
-                  _convValueBuild(units);
-                  inputA.text = unitDetails[value] ?? "";
-                }
-              }
-            },
-          ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selecteddataSymbolA.toString(),
-            ),
-            controller: inputA,
-            focusNode: inputAFN,
-            onChanged: (value) {
-              if (inputAFN.hasFocus) {
-                _conv(selecteddataA, value, inputB);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
-          ),
-          const Divider(),
-          DropdownMenu(
-            dropdownMenuEntries: List.generate(
-              units.length,
-              growable: false,
-              (index) {
-                var unit = units[index];
-                return DropdownMenuEntry(
-                  value: unit.name,
-                  label: unit.name
-                      .toString()
-                      .split("DIGITAL_DATA.")
-                      .last
-                      .capitalize(),
-                );
               },
             ),
-            initialSelection: selecteddataB,
-            onSelected: (value) {
-              setState(() {
-                selecteddataB = value;
-              });
-              if (inputBFN.hasFocus) {
-                if (inputB.text.isNotEmpty) {
+          ),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selecteddataSymbolA.toString(),
+              ),
+              controller: inputA,
+              focusNode: inputAFN,
+              onChanged: (value) {
+                if (inputAFN.hasFocus) {
+                  _conv(selecteddataA, value, inputB);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
+            ),
+          ),
+          const Divider(),
+          Expanded(
+            child: DropdownMenu(
+              dropdownMenuEntries: List.generate(
+                units.length,
+                growable: false,
+                    (index) {
+                  var unit = units[index];
+                  return DropdownMenuEntry(
+                    value: unit.name,
+                    label: unit.name
+                        .toString()
+                        .split("DIGITAL_DATA.")
+                        .last
+                        .capitalize(),
+                  );
+                },
+              ),
+              initialSelection: selecteddataB,
+              onSelected: (value) {
+                setState(() {
+                  selecteddataB = value;
+                });
+                if (inputBFN.hasFocus && inputB.text.isNotEmpty) {
                   data.convert(value, double.parse(inputB.text));
                   units = data.getAll();
-
                   _convValueBuild(units);
                   inputA.text = unitDetails[selecteddataA] ?? "";
                 }
-              } else if (inputAFN.hasFocus) {
-                if (inputA.text.isNotEmpty) {
-                  data.convert(selecteddataA, double.parse(inputA.text));
-                  units = data.getAll();
-
-                  _convValueBuild(units);
-                  inputB.text = unitDetails[value] ?? "";
-                }
-              }
-            },
+              },
+            ),
           ),
-          TextField(
-            enableSuggestions: false,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              suffixText: selecteddataSymbolB.toString(),
+          Expanded(
+            child: TextField(
+              enableSuggestions: false,
+              textAlign: TextAlign.right,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                suffixText: selecteddataSymbolB.toString(),
+              ),
+              controller: inputB,
+              focusNode: inputBFN,
+              onChanged: (value) {
+                if (inputBFN.hasFocus) {
+                  _conv(selecteddataB, value, inputA);
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+              ],
+              style: TextStyle(
+                fontSize: fontsize,
+              ),
+              keyboardType: TextInputType.none,
             ),
-            controller: inputB,
-            focusNode: inputBFN,
-            onChanged: (value) {
-              if (inputBFN.hasFocus) {
-                _conv(selecteddataB, value, inputA);
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
-            ],
-            style: TextStyle(
-              fontSize: fontsize,
-            ),
-            keyboardType: TextInputType.none,
           ),
         ],
       ),
     );
   }
+
 
   Widget _buildButtons(String label, bool tonal) {
     return tonal
