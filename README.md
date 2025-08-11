@@ -1,4 +1,10 @@
 # LapisCalc
+<div align="center">
+  <img src="launcher_icon_sq.png" height="100"/>
+</div>
+<h1 align="center"">LapisCalc</h1>
+
+
 ![Version](https://img.shields.io/badge/version-1.1.8-blue)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Made with Flutter](https://img.shields.io/badge/Made%20with-Flutter-blue?logo=flutter)
