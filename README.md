@@ -8,8 +8,8 @@
 
 
 ![Version](https://img.shields.io/badge/version-1.1.8-blue)
-![License](https://img.shields.io/badge/license-GPLv3-green)
-![Made with Flutter](https://img.shields.io/badge/Made%20with-Flutter-blue?logo=flutter)
+[![License](https://img.shields.io/badge/license-GPLv3-green)](https://www.gnu.org/licenses/gpl-3.0.html)
+[![Made with Flutter](https://img.shields.io/badge/Made%20with-Flutter-blue?logo=flutter)](https://flutter.dev/)
 
 
 **A simple, elegant, and ad-free calculator and unit converter app for Android**
