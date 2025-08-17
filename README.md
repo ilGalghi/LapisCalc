@@ -1,6 +1,8 @@
 # LapisCalc
 <div align="center">
-  <img src="assets/icons/app/launcher_icon_sq.png" height="100"/>
+  <a href="https://play.google.com/store/apps/details?id=com.ilgalghi.lapiscalc">
+    <img src="assets/icons/app/launcher_icon_sq.png" height="100"/>
+  </a>
 </div>
 <h1 align="center"">LapisCalc</h1>
 
