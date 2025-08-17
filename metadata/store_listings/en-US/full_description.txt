@@ -1,0 +1,50 @@
+A simple calculator and unit converter app with Material Design 3 inspired by Windows Calculator
+
+Features
+ - Standard Calculator 
+ - Calculator history
+ - Date Calculator 
+ - Simple unit converter (Angle, Time, Data, Length, Area, Volume, etc...)
+
+Planned updates
+ - Scientific calculator
+
+
+------------------------
+
+
+LapisCalc - Your All-in-One Calculator and Unit Converter
+
+Welcome to LapisCalc , a versatile and user-friendly calculator and converter app designed with Material Design 3 aesthetics.
+
+Features:
+• Standard Calculator:
+Perform basic arithmetic operations with ease using our intuitive standard calculator interface.
+Effortlessly handle addition, subtraction, multiplication, and division with precision.
+
+• Calculator History:
+Keep track of your calculations with the built-in calculator history feature.
+Review and reference your previous calculations to streamline your workflow.
+
+• Date Calculator:
+Simplify date-related calculations with our specialized date calculator.
+Quickly compute durations between dates or find the result of adding/subtracting days.
+
+• Simple Unit Converter:
+Convert units effortlessly with our comprehensive unit converter.
+Support for various unit categories, including Angle, Time, Data, Length, Area, Volume, and more.
+Streamline your work or studies by converting between different measurement units seamlessly.
+
+• Material Design 3 Inspired:
+Enjoy a modern and visually appealing user interface influenced by Material Design 3 principles.
+Intuitive navigation and clear visual cues make using the app a delightful experience.
+
+• User-Friendly and Ad-Free:
+LapisCalc is designed to be user-friendly, ensuring a smooth and efficient calculation experience for users of all ages.
+Say goodbye to distractions – our app is completely ad-free, providing a clean and focused environment for your calculations.
+
+• Privacy Assurance:
+We prioritize user privacy. LapisCalc does not collect any personal data, making it a secure choice for your everyday calculations.
+
+
+If you have any questions, feedback, or suggestions, feel free to reach out to us at ilgalghi.developer@gmail.com. Thank you!

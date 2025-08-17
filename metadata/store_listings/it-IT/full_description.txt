@@ -1,0 +1,30 @@
+LapisCalc è un'applicazione Android versatile che combina le funzionalità di una calcolatrice completa con un convertitore di unità avanzato. Progettata con un'interfaccia moderna ispirata al Material Design 3, offre un'esperienza utente fluida e intuitiva, completamente priva di pubblicità.
+
+CARATTERISTICHE PRINCIPALI:
+
+🧮 CALCOLATRICE
+• Calcolatrice Standard: Operazioni aritmetiche di base
+• Calcolatrice Data: Calcola durate tra date, aggiungi/sottrai giorni
+• Cronologia Calcoli: Tieni traccia delle operazioni precedenti (fino a 100 calcoli)
+
+🔄 CONVERTITORE DI UNITÀ
+• Angolo: Gradi, radianti, gradianti
+• Area: Metri quadrati, ettari, acri e altro
+• Dati: Byte, KB, MB, GB, TB e unità binarie
+• Energia: Joule, calorie, kWh, BTU
+• Lunghezza: Metri, chilometri, miglia, piedi, pollici
+• Massa: Chilogrammi, grammi, libbre, once
+• Potenza: Watt, cavalli vapore, BTU/h
+• Pressione: Pascal, bar, atmosfere, PSI
+• Temperatura: Celsius, Fahrenheit, Kelvin
+• Tempo: Secondi, minuti, ore, giorni, anni
+• Velocità: m/s, km/h, mph, nodi
+• Volume: Litri, galloni, metri cubi, tazze
+• Calcolatore Mancia: Con percentuali personalizzabili
+
+🎨 CARATTERISTICHE INTERFACCIA
+• Material Design 3
+• Supporto tema automatico scuro/chiaro
+• Supporto multilingua (Italiano, Inglese, Spagnolo, Francese, Rumeno)
+• Interfaccia responsive per diversi formati di schermo
+• Font personalizzato Manrope per migliore leggibilità
