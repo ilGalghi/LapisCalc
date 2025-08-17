@@ -65,9 +65,7 @@ flutter build appbundle
 
 ### 4. **Documentazione Changelog** 📝
 
-Crea un nuovo file changelog in `metadata/en-US/changelogs/`:
-
-**Nome file:** `118.txt` (incrementa il numero)
+Aggiornare [CHANGELOG.md](../CHANGELOG.md)
 
 **Contenuto esempio:**
 ```

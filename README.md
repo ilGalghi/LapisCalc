@@ -4,7 +4,7 @@
     <img src="assets/icons/app/launcher_icon_sq.png" height="100"/>
   </a>
 </div>
-<h1 align="center"">LapisCalc</h1>
+<h1 align="center">LapisCalc</h1>
 
 
 ![Version](https://img.shields.io/badge/version-1.1.8-blue)
@@ -65,11 +65,7 @@ LapisCalc is a versatile Android application that combines the functionality of 
 - Custom Manrope font for better readability
 
 
-
-
-
 ## 🛠️ Technologies Used
-
 - **Framework**: Flutter 3.0+
 - **Language**: Dart
 - **Design**: Material Design 3
@@ -78,18 +74,17 @@ LapisCalc is a versatile Android application that combines the functionality of 
 - **Persistence**: SharedPreferences
 
 ## 📄 License and Original Project
-
-LapisCalc is based on [**MintCalc**](https://github.com/boredcodebyk/mintcalc) by [boredcodebyk](https://github.com/boredcodebyk). This repository is a **fork** of the original project with improvements and additional features.
+LapisCalc is based on [**MintCalc**](https://github.com/boredcodebyk/mintcalc) by [boredcodebyk](https://github.com/boredcodebyk). 
+This repository is an **independent project** with improvements and additional features, derived from the original MintCalc.
 
 ### License
 This project is distributed under the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for complete details.
 
 
 ## 🚀 Current Version
-
 **Version**: 1.1.8
 
-To see recent changes, check the [changelogs](CHANGELOG.md) in the metadata directory.
+To see recent changes, check the [CHANGELOG](CHANGELOG.md) in the metadata directory.
 
 ---
 

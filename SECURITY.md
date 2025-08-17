@@ -18,7 +18,7 @@ Please include the following information in your report:
 
 ### What to Expect
 
-- We will acknowledge receipt of your report within 48 hours
+- We will acknowledge receipt as soon as possible
 - We will investigate the issue and provide updates on our progress
 - We will work to resolve confirmed vulnerabilities in a timely manner
 - We will coordinate with you on disclosure timing once the issue is resolved
