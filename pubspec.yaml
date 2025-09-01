@@ -3,7 +3,7 @@ description: "A simple calculator and unit converter app with Material Design 3.
 
 publish_to: 'none'
 
-version: 1.1.8
+version: 1.1.9
 
 environment:
   sdk: '>=3.0.5 <4.0.0'
@@ -16,17 +16,17 @@ dependencies:
   animations: ^2.0.7
   cupertino_icons: ^1.0.2
   duration: ^4.0.3
-  dynamic_color: ^1.6.5
+  dynamic_color: ^1.8.1
   intl: any
   flutter_svg: ^2.0.7
-  fluttertoast: ^8.0.7
-  math_expressions: ^2.4.0
+  fluttertoast: ^8.2.12
+  math_expressions: ^3.1.0
   provider: ^6.0.5
   responsive_builder: ^0.7.0
   shared_preferences: ^2.2.0
   units_converter: ^3.0.0
   url_launcher: ^6.1.11
-  in_app_review: ^2.0.10
+  in_app_review: ^2.0.11
 
 
 

@@ -9,7 +9,7 @@ Questa checklist ti guiderà attraverso tutti i passaggi necessari per rilasciar
 #### A. Versione App (pubspec.yaml)
 ```yaml
 # In pubspec.yaml, riga 7
-version: 1.1.8  # Incrementa la versione (es: 1.1.7 → 1.1.8)
+version: 1.1.9  # Incrementa la versione (es: 1.1.7 → 1.1.8)
 ```
 
 #### B. Version Code (build.gradle)

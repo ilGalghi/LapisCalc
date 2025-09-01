@@ -504,7 +504,7 @@ class _AboutState extends State<About> {
               const ListTile(
                 leading: Icon(Icons.info_outline),
                 title: Text("App Version"),
-                subtitle: Text("1.1.8"),          //da modificare ogni release
+                subtitle: Text("1.1.9"),          //da modificare ogni release
               ),
               ListTile(
                 leading: const Icon(Icons.info_outline),
@@ -512,7 +512,7 @@ class _AboutState extends State<About> {
                 onTap: () => showLicensePage(
                     context: context,
                     applicationName: "LapisCalc",
-                    applicationVersion: "1.1.8"),     //da modificare ogni release
+                    applicationVersion: "1.1.9"),     //da modificare ogni release
               ),
               /*
               ListTile(

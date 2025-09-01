@@ -14,7 +14,6 @@ All notable changes to this project will be documented in this file.
 - Fix icons and theme icon
 
 ## [1.1.7]
-
 ### Changed
 - Update targetAPI from 33 (Android 13) to 34 (Android 14) (updating Flutter)
 - Update minSdkVersion (from Flutter)
@@ -24,7 +23,6 @@ All notable changes to this project will be documented in this file.
 - Bug fixing
 
 ## [1.1.6]
-
 ### Added
 - "Android Info" in settings page
 - "App Info" in settings page
@@ -38,7 +36,6 @@ All notable changes to this project will be documented in this file.
 - Fixed bugs
 
 ## [1.1.5]
-
 ### Added
 - Power Converter
 - Energy Converter
@@ -55,7 +52,6 @@ All notable changes to this project will be documented in this file.
 - Fixed bugs
 
 ## [1.1.4]
-
 ### Added
 - Romanian language support
 - "Leave a review" functionality
@@ -66,7 +62,6 @@ All notable changes to this project will be documented in this file.
 - Update settings page
 
 ## [1.1.3]
-
 ### Added
 - Button to clean history
 - Toast notification for clean history (with language support)
@@ -80,7 +75,6 @@ All notable changes to this project will be documented in this file.
 - Improved languages
 
 ## [1.1.2]
-
 ### Added
 - Language support and translations
 - Layout improvements for calculator (0 and "." buttons)
@@ -95,7 +89,6 @@ All notable changes to this project will be documented in this file.
 - Main update with various improvements
 
 ## [1.1.1]
-
 ### Added
 - Haptic feedback functionality
 
@@ -103,12 +96,10 @@ All notable changes to this project will be documented in this file.
 - Fixed haptic feedback issues
 
 ## [1.1.0]
-
 ### Fixed
 - Bug fixes
 - Optimized for landscape orientation and larger devices
 
 ## [1.0.0]
-
 ### Added
 - First release of LapisCalc
