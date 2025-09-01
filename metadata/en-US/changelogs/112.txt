@@ -1,0 +1,7 @@
+MAIN UPDATE (Google Play Store):
+ - Add "Language" and Translations
+ - Layout calculator (0 and ".")
+ - Change name
+ - Change package
+ - Change icon
+ - Change colors

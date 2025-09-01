@@ -1,0 +1,8 @@
+- Add Romanian language
+- Add "leave a review"
+- Add "buy me a coffee"
+- Add "selected language"
+
+
+- Add Romanian language
+- Update settings page

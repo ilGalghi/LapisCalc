@@ -1,0 +1,18 @@
+- Fixed "Leave review"
+- Add Power Converter
+- Add Energy Converter
+- Fix "Bottom overflow" for Power Converter
+- Fix "Bottom overflow" for Power Energy
+- Created "Tip Converter":
+    - Text "Amount", "Tip percentage", "Tip Amount", "Total Amount"
+    - Numbers keyboard
+    - Traslations
+
+
+Google Play:
+News:
+- Added power converter
+- Added energy converter
+- Added tip converter
+- Updated translations
+- Fixed bugs

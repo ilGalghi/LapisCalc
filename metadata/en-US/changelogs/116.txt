@@ -1,0 +1,13 @@
+In settings_page:
+- Add "Android Info"
+- Add "App Info"
+- Add "Contact Me"
+    - Add emailto
+    - Add email with android info and app info
+- Updated translations
+
+
+Google Play:
+News:
+- Add "Contact me" section
+- Fixed bugs

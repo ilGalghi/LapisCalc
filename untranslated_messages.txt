@@ -1,0 +1,17 @@
+{
+  "es": [
+    "buyMeCoffee"
+  ],
+
+  "fr": [
+    "buyMeCoffee"
+  ],
+
+  "it": [
+    "buyMeCoffee"
+  ],
+
+  "ro": [
+    "buyMeCoffee"
+  ]
+}

@@ -1,0 +1,16 @@
+- Correct "theme from system" (package incorrect)
+- Button clean history
+- Toast clean history (+ languages)
+- Language "Set significant figures" and buttons
+- Fixed "Expanded" in converter layouts
+
+
+
+
+<en-US>
+Bug fixing
+- Corrected "theme color from system"
+- Added button "clean history"
+- Fixed converters screen layout
+- Improved languages
+</en-US>

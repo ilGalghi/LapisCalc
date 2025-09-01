@@ -1,0 +1,3 @@
+Update to target API 35
+Update pubspec.yaml
+Fix icons and theme icon

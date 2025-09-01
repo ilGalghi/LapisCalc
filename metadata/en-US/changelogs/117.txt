@@ -1,0 +1,34 @@
+In build.gradle:
+- Update targetAPI from 33 (Android 13) to 34 (Android 14) (updating Flutter)
+- Update minSdkVersion (from Flutter)
+
+In settings_page.dart:
+- Move "Manufacturer" at the top of the support email
+
+
+Play Store:
+News:
+- Bug fixing
+
+-------------------------------------------------------
+
+<en-US>
+News:
+- Bug fixing
+</en-US>
+<es-ES>
+Novedades:
+- Corrección de errores
+</es-ES>
+<fr-FR>
+Nouveautés :
+- Correction de bugs
+</fr-FR>
+<it-IT>
+Novità:
+- Correzione di bug
+</it-IT>
+<ro>
+Noutăți:
+- Remediere a erorilor
+</ro>
