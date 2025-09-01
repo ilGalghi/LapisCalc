@@ -7,7 +7,7 @@
 <h1 align="center">LapisCalc</h1>
 
 
-![Version](https://img.shields.io/badge/version-1.1.8-blue)
+![Version](https://img.shields.io/badge/version-1.1.9-blue)
 [![License](https://img.shields.io/badge/license-GPLv3-green)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Made with Flutter](https://img.shields.io/badge/Made%20with-Flutter-blue?logo=flutter)](https://flutter.dev/)
 
@@ -82,7 +82,7 @@ This project is distributed under the **GNU General Public License v3.0**. See t
 
 
 ## 📋 Current Version
-**Version**: 1.1.8
+**Version**: 1.1.9
 
 To see recent changes, check the [CHANGELOG](CHANGELOG.md) in the metadata directory.
 
