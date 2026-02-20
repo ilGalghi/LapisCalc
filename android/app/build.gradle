@@ -67,7 +67,7 @@ android {
         applicationId "com.ilgalghi.lapiscalc"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 21
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -99,7 +99,8 @@ dependencies {
 // Forza Java 11 su tutte le dipendenze
 configurations.all {
     resolutionStrategy {
-        force 'org.jetbrains.kotlin:kotlin-stdlib:1.9.20'
-        force 'org.jetbrains.kotlin:kotlin-stdlib-common:1.9.20'
+        force 'androidx.browser:browser:1.8.0'
+        force 'androidx.core:core:1.13.1'
+        force 'androidx.core:core-ktx:1.13.1'
     }
 }

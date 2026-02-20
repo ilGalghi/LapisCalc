@@ -87,6 +87,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addsubtractdays => 'Add/Subtract Days';
 
   @override
+  String get timedifference => 'Time Difference';
+
+  @override
+  String get addsubtracttime => 'Add/Subtract Time';
+
+  @override
+  String get hours => 'hours';
+
+  @override
+  String get hour => 'hour';
+
+  @override
+  String get hourM => 'Hour';
+
+  @override
+  String get minutes => 'minutes';
+
+  @override
+  String get minute => 'minute';
+
+  @override
+  String get minuteM => 'Minute';
+
+  @override
   String get from => 'From';
 
   @override

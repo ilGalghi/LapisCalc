@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-02-20
+### Added
+- Time Calculator with two tabs:
+  - Time Difference: calculate the difference between two times (hours and minutes)
+  - Add/Subtract Time: add or subtract hours and minutes from a selected time
+- New translations for Time Calculator in all supported languages (EN, IT, ES, FR, RO)
+- New navigation drawer entry for Time Calculator (between Standard and Date)
+
+### Fixed
+- Updated `MainActivity.kt` to Flutter Embedding v2 (removed deprecated `@NonNull` annotation and unused imports)
+- Fixed Android build configuration (`app/build.gradle`)
+
 ## [1.1.9] - 2025-09-01
 - Fix security problem
 - Fix support 16 KB page sizes 

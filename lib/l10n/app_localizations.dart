@@ -260,6 +260,54 @@ abstract class AppLocalizations {
   /// **'Add/Subtract Days'**
   String get addsubtractdays;
 
+  /// No description provided for @timedifference.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Difference'**
+  String get timedifference;
+
+  /// No description provided for @addsubtracttime.
+  ///
+  /// In en, this message translates to:
+  /// **'Add/Subtract Time'**
+  String get addsubtracttime;
+
+  /// No description provided for @hours.
+  ///
+  /// In en, this message translates to:
+  /// **'hours'**
+  String get hours;
+
+  /// No description provided for @hour.
+  ///
+  /// In en, this message translates to:
+  /// **'hour'**
+  String get hour;
+
+  /// No description provided for @hourM.
+  ///
+  /// In en, this message translates to:
+  /// **'Hour'**
+  String get hourM;
+
+  /// No description provided for @minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get minutes;
+
+  /// No description provided for @minute.
+  ///
+  /// In en, this message translates to:
+  /// **'minute'**
+  String get minute;
+
+  /// No description provided for @minuteM.
+  ///
+  /// In en, this message translates to:
+  /// **'Minute'**
+  String get minuteM;
+
   /// No description provided for @from.
   ///
   /// In en, this message translates to:

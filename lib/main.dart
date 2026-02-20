@@ -131,6 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const List _pages = [
     StdCalc(),
     //SciCalc(),
+    TimeCalc(),
     DateCalc(),
     AngleConv(),
     TemperatureConv(),
@@ -149,6 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _pageTitles = {
     StdCalc: StdCalc.pageTitle,
     //SciCalc: SciCalc.pageTitle,
+    TimeCalc: TimeCalc.pageTitle,
     DateCalc: DateCalc.pageTitle,
     AngleConv: AngleConv.pageTitle,
     TemperatureConv: TemperatureConv.pageTitle,
@@ -222,6 +224,12 @@ class _MyHomePageState extends State<MyHomePage> {
             label: Text(AppLocalizations.of(context)!.scientific),
           ),
           */
+
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.more_time_outlined),
+            selectedIcon: const Icon(Icons.more_time),
+            label: Text(AppLocalizations.of(context)!.time),
+          ),
 
           NavigationDrawerDestination(
             icon: const Icon(Icons.date_range_outlined),

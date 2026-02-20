@@ -2,6 +2,7 @@
 export './calc/standard_calc.dart';
 export './calc/scientific_calc.dart';
 export './calc/date_calc.dart';
+export './calc/time_calc.dart';
 
 //Converter Pages
 export './conv/angle_conv.dart';

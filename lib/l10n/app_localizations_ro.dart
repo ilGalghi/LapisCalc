@@ -87,6 +87,30 @@ class AppLocalizationsRo extends AppLocalizations {
   String get addsubtractdays => 'Adaugă/Scade Zile';
 
   @override
+  String get timedifference => 'Diferență de timp';
+
+  @override
+  String get addsubtracttime => 'Adaugă/Scade Timp';
+
+  @override
+  String get hours => 'ore';
+
+  @override
+  String get hour => 'oră';
+
+  @override
+  String get hourM => 'Oră';
+
+  @override
+  String get minutes => 'minute';
+
+  @override
+  String get minute => 'minut';
+
+  @override
+  String get minuteM => 'Minut';
+
+  @override
   String get from => 'De la';
 
   @override
