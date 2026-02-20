@@ -11,8 +11,9 @@ All notable changes to this project will be documented in this file.
 - New navigation drawer entry for Time Calculator (between Standard and Date)
 
 ### Fixed
-- Updated `MainActivity.kt` to Flutter Embedding v2 (removed deprecated `@NonNull` annotation and unused imports)
-- Fixed Android build configuration (`app/build.gradle`)
+- Updated `MainActivity.kt` to Flutter Embedding v2
+- Upgraded Android Gradle Plugin (8.5.2 → 8.9.1), Kotlin (1.9.20 → 2.1.0), Gradle (8.8 → 8.11.1)
+- Fixed time difference calculation across midnight (e.g. 23:30 → 06:30 = 7h)
 
 ## [1.1.9] - 2025-09-01
 - Fix security problem
