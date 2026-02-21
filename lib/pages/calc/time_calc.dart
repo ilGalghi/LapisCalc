@@ -76,10 +76,9 @@ class _BuildTimeDiffState extends State<BuildTimeDiff>
   int timeDiffMinutes(TimeOfDay t1, TimeOfDay t2) {
     int m1 = t1.hour * 60 + t1.minute;
     int m2 = t2.hour * 60 + t2.minute;
-    int diff = (m1 - m2).abs();
-    // Prendi il percorso più corto attorno alle 24 ore
-    if (diff > 720) {
-      diff = 1440 - diff;
+    int diff = m2 - m1;
+    if (diff < 0) {
+      diff += 1440; // avvolgi attorno alla mezzanotte
     }
     return diff;
   }
