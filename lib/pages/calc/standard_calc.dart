@@ -67,56 +67,154 @@ class _StdCalcState extends State<StdCalc> {
     print(input.selection.extentOffset);
   }
 
+  String _formatResult(dynamic value) {
+    if (value is! num || value.isNaN) return "Error";
+    if (value.isInfinite) return value.isNegative ? "-Infinity" : "Infinity";
+
+    double d = value.toDouble();
+    // Use 12 significant digits to eliminate floating point inaccuracies (e.g. 5.3999999999999995 -> 5.4)
+    double cleaned = double.parse(d.toStringAsPrecision(12));
+
+    if (cleaned == cleaned.roundToDouble() && cleaned.abs() < 1e15) {
+      return cleaned.toInt().toString();
+    }
+
+    String str = cleaned.toString();
+    if (str.endsWith(".0")) {
+      str = str.substring(0, str.length - 2);
+    }
+    return str;
+  }
+
+  String _processPercentage(String inputStr) {
+    var s = inputStr;
+
+    // 1. Infix percentage: e.g. 9%60 or 9%(60) -> (9/100)*60
+    s = s.replaceAllMapped(
+      RegExp(r'((?:[0-9]+(?:\.[0-9]+)?|\([^\(\)]+\)))%(?=[\d\(])'),
+      (m) => '(${m[1]}/100)*',
+    );
+
+    // 2. Additive/Subtractive percentage: e.g. 10 - 20% -> 10 - (10 * 20 / 100) = 8
+    final addSubPercentRegex = RegExp(
+      r'((?:[0-9]+(?:\.[0-9]+)?|\([^\(\)]+\)))\s*([\+\-])\s*([0-9]+(?:\.[0-9]+)?|\([^\(\)]+\))%',
+    );
+    while (addSubPercentRegex.hasMatch(s)) {
+      s = s.replaceAllMapped(addSubPercentRegex, (m) {
+        final base = m[1];
+        final op = m[2];
+        final percent = m[3];
+        return '$base $op ($base * $percent / 100)';
+      });
+    }
+
+    // 3. Standalone / multiplicative percentage: e.g. 50% -> (50/100), 10 * 20% -> 10 * (20/100)
+    s = s.replaceAllMapped(
+      RegExp(r'((?:[0-9]+(?:\.[0-9]+)?|\([^\(\)]+\)))%'),
+      (m) => '(${m[1]}/100)',
+    );
+
+    // 4. Any remaining stray %
+    s = s.replaceAll('%', '/100');
+
+    return s;
+  }
+
   void _doMath(String val) {
     if (val == "=") {
       if (input.text.isNotEmpty) {
         var userinput = input.text
             .replaceAll("\u00d7", "*")
-            .replaceAll("÷", "/")
-            .replaceAll(bracketsCheck, "*");
+            .replaceAll("÷", "/");
+
+        userinput = _processPercentage(userinput);
+        userinput = userinput.replaceAll(bracketsCheck, "*");
+
+        // Auto-close any open parentheses
+        int openP = 0;
+        int closeP = 0;
+        for (int i = 0; i < userinput.length; i++) {
+          if (userinput[i] == '(') openP++;
+          if (userinput[i] == ')') closeP++;
+        }
+        if (openP > closeP) {
+          userinput += ')' * (openP - closeP);
+        }
+
         Parser P = Parser();
         try {
           Expression expression = P.parse(userinput);
 
           ContextModel cm = ContextModel();
           var finalvalue = expression.evaluate(EvaluationType.REAL, cm);
+          final formattedOutput = _formatResult(finalvalue);
           setState(() {
-            output = finalvalue.toString();
+            output = formattedOutput;
           });
-          if (output.endsWith(".0")) {
-            setState(() {
-              output = output.substring(0, output.length - 2);
-            });
-          }
           addToHistory(userinput, output);
-          input.clear();
-          input.value = TextEditingValue(
-            text: input.text.replaceRange(
-                input.selection.start.abs(), input.selection.end.abs(), output),
-            selection: TextSelection.collapsed(
-                offset: input.selection.baseOffset + output.length),
-          );
-        } on Exception catch (e) {
           setState(() {
-            output = "Syntax Error $e";
+            input.value = TextEditingValue(
+              text: output,
+              selection: TextSelection.collapsed(offset: output.length),
+            );
+          });
+        } catch (e) {
+          setState(() {
+            output = "Syntax Error";
           });
         }
       }
       listHistory();
     } else if (val == "()") {
-      if (input.selection.isCollapsed) {
+      if (!input.selection.isValid || input.selection.isCollapsed) {
+        int cursor = input.selection.isValid && input.selection.baseOffset >= 0
+            ? input.selection.baseOffset
+            : input.text.length;
+
+        String textBefore = input.text.substring(0, cursor);
+        int openCount = 0;
+        int closeCount = 0;
+        for (int i = 0; i < textBefore.length; i++) {
+          if (textBefore[i] == '(') openCount++;
+          if (textBefore[i] == ')') closeCount++;
+        }
+
+        String toInsert = "(";
+        if (textBefore.isNotEmpty) {
+          String prevChar = textBefore[textBefore.length - 1];
+          bool isDigitOrClosing = RegExp(r'[0-9\)]').hasMatch(prevChar);
+          if (openCount > closeCount && isDigitOrClosing) {
+            toInsert = ")";
+          } else if (isDigitOrClosing) {
+            toInsert = "*(";
+          } else {
+            toInsert = "(";
+          }
+        } else {
+          toInsert = "(";
+        }
+
         setState(() {
-          input.value = input.value
-              .replaced(TextRange.collapsed(input.selection.baseOffset), val);
+          if (input.selection.isValid && input.selection.baseOffset >= 0) {
+            input.value = input.value.replaced(
+              TextRange.collapsed(input.selection.baseOffset),
+              toInsert,
+            );
+          } else {
+            input.text = input.text + toInsert;
+            input.selection = TextSelection.collapsed(offset: input.text.length);
+          }
         });
       } else {
         setState(() {
           input.value = input.value.replaced(
-              TextRange(start: input.selection.start, end: input.selection.end),
-              '(${input.text.substring(input.selection.start, input.selection.end)})');
+            TextRange(start: input.selection.start, end: input.selection.end),
+            '(${input.text.substring(input.selection.start, input.selection.end)})',
+          );
         });
         input.selection = TextSelection.fromPosition(
-            TextPosition(offset: input.selection.end - 1));
+          TextPosition(offset: input.selection.end),
+        );
       }
     } else {
       if (input.selection.isCollapsed) {
@@ -459,8 +557,6 @@ class _StdCalcState extends State<StdCalc> {
       valb = "-";
     } else if (val == "÷") {
       valb = "/";
-    } else if (val == "%") {
-      valb = "/100*";          // Cambia % con /100 per ottenere la percentuale (sennò fa divisione per intero)
     } else {
       valb = val;
     }

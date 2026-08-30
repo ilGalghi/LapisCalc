@@ -23,163 +23,148 @@ class _PowerConvState extends State<PowerConv> {
   TextEditingController inputB = TextEditingController();
   FocusNode inputBFN = FocusNode();
 
+  bool isInputA = true;
   var selectedpowerA;
   var selectedpowerB;
   var selectedpowerSymbolA;
   var selectedpowerSymbolB;
   var power = Power(significantFigures: 7, removeTrailingZeros: true);
   var units = [];
-
-  void _bkspc() {
-    if (inputAFN.hasFocus) {
-      if (inputA.text.isNotEmpty) {
-        if (inputA.selection.isCollapsed) {
-          if (inputA.selection.baseOffset == inputA.text.length) {
-            setState(() {
-              inputA.text = inputA.text.substring(0, inputA.text.length - 1);
-            });
-            inputA.selection = TextSelection.fromPosition(
-                TextPosition(offset: inputA.text.length));
-          } else {
-            setState(() {
-              inputA.value = inputA.value.replaced(
-                  TextRange(
-                      start: inputA.selection.baseOffset - 1,
-                      end: inputA.selection.baseOffset),
-                  "");
-            });
-            inputA.selection = TextSelection.fromPosition(
-                TextPosition(offset: inputA.selection.start));
-          }
-        } else {
-          setState(() {
-            inputA.value = inputA.value.replaced(
-                TextRange(
-                    start: inputA.selection.start, end: inputA.selection.end),
-                "");
-          });
-          inputA.selection = TextSelection.fromPosition(
-              TextPosition(offset: inputA.selection.end));
-        }
-        if (inputA.text.isNotEmpty) {
-          power.convert(selectedpowerA, double.parse(inputA.text));
-
-          units = power.getAll();
-
-          _convValueBuild(units);
-          inputB.text = unitDetails[selectedpowerB] ?? "";
-        } else {
-          setState(() {
-            inputA.clear();
-            inputB.clear();
-          });
-        }
-      }
-    } else if (inputBFN.hasFocus) {
-      if (inputB.text.isNotEmpty) {
-        if (inputB.selection.isCollapsed) {
-          if (inputB.selection.baseOffset == inputB.text.length) {
-            setState(() {
-              inputB.text = inputB.text.substring(0, inputB.text.length - 1);
-            });
-            inputB.selection = TextSelection.fromPosition(
-                TextPosition(offset: inputB.text.length));
-          } else {
-            setState(() {
-              inputB.value = inputB.value.replaced(
-                  TextRange(
-                      start: inputB.selection.baseOffset - 1,
-                      end: inputB.selection.baseOffset),
-                  "");
-            });
-            inputB.selection = TextSelection.fromPosition(
-                TextPosition(offset: inputB.selection.start));
-          }
-        } else {
-          setState(() {
-            inputB.value = inputB.value.replaced(
-                TextRange(
-                    start: inputB.selection.start, end: inputB.selection.end),
-                "");
-          });
-          inputB.selection = TextSelection.fromPosition(
-              TextPosition(offset: inputB.selection.end));
-        }
-        if (inputB.text.isNotEmpty) {
-          power.convert(selectedpowerB, double.parse(inputB.text));
-          units = power.getAll();
-
-          _convValueBuild(units);
-          inputA.text = unitDetails[selectedpowerA] ?? "";
-        } else {
-          setState(() {
-            inputA.clear();
-            inputB.clear();
-          });
-        }
-      }
-    }
-  }
-
   Map<dynamic, String> unitDetails = {};
 
   void _convValueBuild(unitsconv) {
     for (Unit unit in unitsconv) {
       if (unit.name == selectedpowerA) {
-        setState(() {
-          selectedpowerSymbolA = unit.symbol;
-        });
-      } else if (unit.name == selectedpowerB) {
-        setState(() {
-          selectedpowerSymbolB = unit.symbol;
-        });
+        selectedpowerSymbolA = unit.symbol;
       }
-      unitDetails.addAll({unit.name: unit.stringValue ?? ""});
+      if (unit.name == selectedpowerB) {
+        selectedpowerSymbolB = unit.symbol;
+      }
+      unitDetails[unit.name] = unit.stringValue ?? "";
     }
   }
 
-  void _conv(selectedUnit, val, TextEditingController input) {
-    power.convert(selectedUnit, val);
+  void _recalculate() {
+    if (isInputA) {
+      if (inputA.text.isNotEmpty && double.tryParse(inputA.text) != null) {
+        power.convert(selectedpowerA, double.parse(inputA.text));
+        units = power.getAll();
+        _convValueBuild(units);
+        inputB.text = unitDetails[selectedpowerB] ?? "";
+      } else {
+        units = power.getAll();
+        _convValueBuild(units);
+        if (inputA.text.isEmpty) {
+          inputB.clear();
+        }
+      }
+    } else {
+      if (inputB.text.isNotEmpty && double.tryParse(inputB.text) != null) {
+        power.convert(selectedpowerB, double.parse(inputB.text));
+        units = power.getAll();
+        _convValueBuild(units);
+        inputA.text = unitDetails[selectedpowerA] ?? "";
+      } else {
+        units = power.getAll();
+        _convValueBuild(units);
+        if (inputB.text.isEmpty) {
+          inputA.clear();
+        }
+      }
+    }
+  }
 
-    units = power.getAll();
-
-    _convValueBuild(units);
-    input.text = unitDetails[selectedUnit] ?? "";
+  void _bkspc() {
+    setState(() {
+      if (isInputA) {
+        if (inputA.text.isNotEmpty) {
+          if (inputA.selection.isCollapsed) {
+            if (inputA.selection.baseOffset == inputA.text.length ||
+                inputA.selection.baseOffset < 0) {
+              inputA.text = inputA.text.substring(0, inputA.text.length - 1);
+              inputA.selection = TextSelection.fromPosition(
+                  TextPosition(offset: inputA.text.length));
+            } else if (inputA.selection.baseOffset > 0) {
+              final int offset = inputA.selection.baseOffset;
+              inputA.value = inputA.value.replaced(
+                  TextRange(start: offset - 1, end: offset), "");
+              inputA.selection =
+                  TextSelection.fromPosition(TextPosition(offset: offset - 1));
+            }
+          } else {
+            final int start = inputA.selection.start;
+            inputA.value = inputA.value.replaced(
+                TextRange(start: start, end: inputA.selection.end), "");
+            inputA.selection =
+                TextSelection.fromPosition(TextPosition(offset: start));
+          }
+        }
+      } else {
+        if (inputB.text.isNotEmpty) {
+          if (inputB.selection.isCollapsed) {
+            if (inputB.selection.baseOffset == inputB.text.length ||
+                inputB.selection.baseOffset < 0) {
+              inputB.text = inputB.text.substring(0, inputB.text.length - 1);
+              inputB.selection = TextSelection.fromPosition(
+                  TextPosition(offset: inputB.text.length));
+            } else if (inputB.selection.baseOffset > 0) {
+              final int offset = inputB.selection.baseOffset;
+              inputB.value = inputB.value.replaced(
+                  TextRange(start: offset - 1, end: offset), "");
+              inputB.selection =
+                  TextSelection.fromPosition(TextPosition(offset: offset - 1));
+            }
+          } else {
+            final int start = inputB.selection.start;
+            inputB.value = inputB.value.replaced(
+                TextRange(start: start, end: inputB.selection.end), "");
+            inputB.selection =
+                TextSelection.fromPosition(TextPosition(offset: start));
+          }
+        }
+      }
+      _recalculate();
+    });
   }
 
   void _convFunc(val) {
     if (val == "C") {
-      inputA.clear();
-      inputB.clear();
+      setState(() {
+        inputA.clear();
+        inputB.clear();
+        units = power.getAll();
+        _convValueBuild(units);
+      });
     } else {
       setState(() {
-        if (inputAFN.hasFocus) {
-          inputA.value = TextEditingValue(
-            text: inputA.text.replaceRange(
-                inputA.selection.start, inputA.selection.end, val),
-            selection: TextSelection.collapsed(
-                offset: inputA.selection.baseOffset + val.toString().length),
-          );
-          power.convert(selectedpowerA, double.parse(inputA.text));
-
-          units = power.getAll();
-
-          _convValueBuild(units);
-          inputB.text = unitDetails[selectedpowerB] ?? "";
-        } else if (inputBFN.hasFocus) {
-          inputB.value = TextEditingValue(
-            text: inputB.text.replaceRange(
-                inputB.selection.start, inputB.selection.end, val),
-            selection: TextSelection.collapsed(
-                offset: inputB.selection.baseOffset + val.toString().length),
-          );
-          power.convert(selectedpowerB, double.parse(inputB.text));
-
-          units = power.getAll();
-
-          _convValueBuild(units);
-          inputA.text = unitDetails[selectedpowerA] ?? "";
+        if (isInputA) {
+          if (inputA.selection.start >= 0 && inputA.selection.end >= 0) {
+            inputA.value = TextEditingValue(
+              text: inputA.text.replaceRange(
+                  inputA.selection.start, inputA.selection.end, val.toString()),
+              selection: TextSelection.collapsed(
+                  offset: inputA.selection.start + val.toString().length),
+            );
+          } else {
+            inputA.text = inputA.text + val.toString();
+            inputA.selection = TextSelection.fromPosition(
+                TextPosition(offset: inputA.text.length));
+          }
+        } else {
+          if (inputB.selection.start >= 0 && inputB.selection.end >= 0) {
+            inputB.value = TextEditingValue(
+              text: inputB.text.replaceRange(
+                  inputB.selection.start, inputB.selection.end, val.toString()),
+              selection: TextSelection.collapsed(
+                  offset: inputB.selection.start + val.toString().length),
+            );
+          } else {
+            inputB.text = inputB.text + val.toString();
+            inputB.selection = TextSelection.fromPosition(
+                TextPosition(offset: inputB.text.length));
+          }
         }
+        _recalculate();
       });
     }
   }
@@ -187,13 +172,35 @@ class _PowerConvState extends State<PowerConv> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      units = power.getAll();
-      selectedpowerA = POWER.watt;
-      selectedpowerB = POWER.kilowatt;
+    isInputA = true;
+    inputAFN.addListener(() {
+      if (inputAFN.hasFocus) {
+        setState(() {
+          isInputA = true;
+        });
+      }
     });
-    inputAFN.requestFocus();
+    inputBFN.addListener(() {
+      if (inputBFN.hasFocus) {
+        setState(() {
+          isInputA = false;
+        });
+      }
+    });
+    selectedpowerA = POWER.watt;
+    selectedpowerB = POWER.kilowatt;
+    units = power.getAll();
     _convValueBuild(units);
+    inputAFN.requestFocus();
+  }
+
+  @override
+  void dispose() {
+    inputA.dispose();
+    inputAFN.dispose();
+    inputB.dispose();
+    inputBFN.dispose();
+    super.dispose();
   }
 
   @override
@@ -275,13 +282,17 @@ class _PowerConvState extends State<PowerConv> {
       children: [
         FilledButton(
             onPressed: () {
-              if (inputBFN.hasFocus) {
-                inputBFN.unfocus();
-                inputAFN.requestFocus();
-              } else if (inputAFN.hasFocus) {
-                inputAFN.unfocus();
-                inputBFN.requestFocus();
-              }
+              setState(() {
+                if (isInputA) {
+                  inputAFN.unfocus();
+                  inputBFN.requestFocus();
+                  isInputA = false;
+                } else {
+                  inputBFN.unfocus();
+                  inputAFN.requestFocus();
+                  isInputA = true;
+                }
+              });
             },
             child: Transform.rotate(
               angle: 90 * pi / 180,
@@ -336,8 +347,8 @@ class _PowerConvState extends State<PowerConv> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-        Expanded(
-          child: DropdownMenu(
+          Expanded(
+            child: DropdownMenu(
                 dropdownMenuEntries: List.generate(
                   units.length,
                   growable: false,
@@ -353,24 +364,8 @@ class _PowerConvState extends State<PowerConv> {
                 onSelected: (value) {
                   setState(() {
                     selectedpowerA = value;
+                    _recalculate();
                   });
-                  if (inputAFN.hasFocus) {
-                    if (inputA.text.isNotEmpty) {
-                      power.convert(value, double.parse(inputA.text));
-                      units = power.getAll();
-
-                      _convValueBuild(units);
-                      inputB.text = unitDetails[selectedpowerB] ?? "";
-                    }
-                  } else if (inputBFN.hasFocus) {
-                    if (inputB.text.isNotEmpty) {
-                      power.convert(selectedpowerB, double.parse(inputB.text));
-                      units = power.getAll();
-
-                      _convValueBuild(units);
-                      inputA.text = unitDetails[value] ?? "";
-                    }
-                  }
                 },
               ),
           ),
@@ -384,10 +379,16 @@ class _PowerConvState extends State<PowerConv> {
               ),
               controller: inputA,
               focusNode: inputAFN,
+              onTap: () {
+                setState(() {
+                  isInputA = true;
+                });
+              },
               onChanged: (value) {
-                if (inputAFN.hasFocus) {
-                  _conv(selectedpowerA, value, inputB);
-                }
+                setState(() {
+                  isInputA = true;
+                  _recalculate();
+                });
               },
               inputFormatters: [
                 FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
@@ -416,24 +417,8 @@ class _PowerConvState extends State<PowerConv> {
               onSelected: (value) {
                 setState(() {
                   selectedpowerB = value;
+                  _recalculate();
                 });
-                if (inputBFN.hasFocus) {
-                  if (inputB.text.isNotEmpty) {
-                    power.convert(value, double.parse(inputB.text));
-                    units = power.getAll();
-
-                    _convValueBuild(units);
-                    inputA.text = unitDetails[selectedpowerA] ?? "";
-                  }
-                } else if (inputAFN.hasFocus) {
-                  if (inputA.text.isNotEmpty) {
-                    power.convert(selectedpowerA, double.parse(inputA.text));
-                    units = power.getAll();
-
-                    _convValueBuild(units);
-                    inputB.text = unitDetails[value] ?? "";
-                  }
-                }
               },
             ),
           ),
@@ -447,10 +432,16 @@ class _PowerConvState extends State<PowerConv> {
               ),
               controller: inputB,
               focusNode: inputBFN,
+              onTap: () {
+                setState(() {
+                  isInputA = false;
+                });
+              },
               onChanged: (value) {
-                if (inputBFN.hasFocus) {
-                  _conv(selectedpowerB, value, inputA);
-                }
+                setState(() {
+                  isInputA = false;
+                  _recalculate();
+                });
               },
               inputFormatters: [
                 FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))

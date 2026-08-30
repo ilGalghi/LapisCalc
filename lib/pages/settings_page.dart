@@ -37,6 +37,7 @@ class SettingsPage extends StatelessWidget {
           animation: animation,
           secondaryAnimation: secondaryAnimation,
           transitionType: SharedAxisTransitionType.horizontal,
+          fillColor: Colors.transparent,
           child: child,
         );
       },

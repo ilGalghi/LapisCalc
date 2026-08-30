@@ -3,8 +3,18 @@
 All notable changes to this project will be documented in this file.
 
 ## [1.2.1] - 2026-08-30
-#### Fix
-- Update Android target SDK to 36
+### Fixed
+- **UI / Dark Mode**: Fixed white screen flash glitch during page transitions (Settings, About, Theme) in Dark Mode by ensuring transparent transition backgrounds.
+- **Unit Converters**: Real-time automatic recalculation across all 12 converters when switching units in either dropdown without having to retype numbers.
+- **Unit Converters**: Fixed focus loss issue when opening dropdown menus and ensured proper controller/focus node disposal.
+- **Standard Calculator**: Fixed `RangeError` and uncaught exceptions when evaluating expressions or pressing `=` on incomplete inputs.
+- **Standard Calculator**: Fixed floating-point precision artifacts (e.g. `9%60` now cleanly evaluates to `5.4` instead of `5.3999999999999995`).
+- **Standard Calculator**: Added support for standard commercial percentage calculations (e.g. `10 - 20% = 8`, `10 + 20% = 12`).
+- **Android**: Updated Android target SDK to 36.
+
+### Improved
+- **Smart Parentheses**: Intelligent contextual `()` button in Standard Calculator that automatically opens `(`, closes `)`, handles implicit multiplication `*(`, wraps text selections, and auto-closes parentheses on `=`.
+- **Percentage Display**: Displays the clean `%` symbol directly in the expression rather than `/100*`.
 
 
 ## [1.2.0] - 2026-02-20

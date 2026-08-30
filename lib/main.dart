@@ -176,6 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
           animation: animation,
           secondaryAnimation: secondaryAnimation,
           transitionType: SharedAxisTransitionType.horizontal,
+          fillColor: Colors.transparent,
           child: child,
         );
       },
