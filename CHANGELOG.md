@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2026-08-30
+#### Fix
+- Update Android target SDK to 36
+
+
 ## [1.2.0] - 2026-02-20
 ### Added
 - Time Calculator with two tabs:

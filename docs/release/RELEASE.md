@@ -15,7 +15,7 @@ version: 1.1.8  # Incrementa la versione (es: 1.1.7 → 1.1.8)
 #### B. Version Code (build.gradle)
 ```gradle
 // In android/app/build.gradle, riga 18
-flutterVersionCode = '7'  // Incrementa il version code (es: 6 → 7)
+flutterVersionCode = '10'  // Incrementa il version code (es: 6 → 7)
 ```
 
 #### C. Settings page (\lib\pages\settings_page.dart)
