@@ -6,38 +6,31 @@ Questa checklist ti guiderà attraverso tutti i passaggi necessari per rilasciar
 
 ### 1. **Aggiornamento Versioni** 📝
 
-#### A. Versione App (pubspec.yaml)
+Version Name e Version Code si aggiornano entrambi in `pubspec.yaml`, che è l'unico punto da modificare:
+
 ```yaml
-# In pubspec.yaml, riga 7
-version: 1.1.8  # Incrementa la versione (es: 1.1.7 → 1.1.8)
+# Formato: version: VERSION_NAME+VERSION_CODE
+version: 1.2.2+11
 ```
 
-#### B. Version Code (build.gradle)
-```gradle
-// In android/app/build.gradle, riga 18
-flutterVersionCode = '10'  // Incrementa il version code (es: 6 → 7)
+- `1.2.2` è il **Version Name** mostrato all'utente.
+- `11` è il **Version Code** Android e deve aumentare a ogni pubblicazione sul Play Store.
+
+Per esempio, alla release successiva è sufficiente cambiare:
+
+```yaml
+# Prima
+version: 1.2.2+11
+
+# Dopo
+version: 1.2.3+12
 ```
 
-#### C. Settings page (\lib\pages\settings_page.dart)
-```gradle
-const ListTile(
-    leading: Icon(Icons.info_outline),
-    title: Text("App Version"),
-    subtitle: Text("1.1.7"),          //da modificare ogni release
-    ),
-    ListTile(
-    leading: const Icon(Icons.info_outline),
-    title: const Text("Licenses"),
-    onTap: () => showLicensePage(
-        context: context,
-        applicationName: "LapisCalc",
-        applicationVersion: "1.1.7"),     //da modificare ogni release
-    ),
-```
+Flutter usa automaticamente questi valori per `versionName` e `versionCode` Android. Anche la schermata Informazioni legge versione e build number dal pacchetto tramite `package_info_plus`, quindi non richiede modifiche manuali.
 
 **Regole per il versioning:**
-- **Version Name** (pubspec.yaml): Formato semantico (es: 1.1.8)
-- **Version Code** (build.gradle): Numero intero che deve essere sempre maggiore del precedente
+- **Version Name**: formato semantico (es: 1.2.2, 1.2.3, 2.0.0)
+- **Version Code**: numero intero che deve essere sempre maggiore del precedente
 
 ### 2. **Test dell'App** 🧪
 
@@ -65,15 +58,14 @@ flutter build appbundle
 
 ### 4. **Documentazione Changelog** 📝
 
-Aggiornare [CHANGELOG.md](../CHANGELOG.md)
+Aggiorna `CHANGELOG.md` e crea un nuovo file changelog in `metadata/en-US/changelogs/`.
+
+**Nome file:** `118.txt` (incrementa il numero)
 
 **Contenuto esempio:**
 ```
 In pubspec.yaml:
-- Update version to 1.1.8
-
-In build.gradle:
-- Update versionCode to 7
+- Update version to 1.2.2+11
 
 Play Store:
 News:
@@ -212,8 +204,7 @@ Noutăți:
 Per un rilascio veloce, usa questo template:
 
 1. **Aggiorna versioni:**
-   - `pubspec.yaml`: `version: 1.1.X`
-   - `build.gradle`: `flutterVersionCode = 'X'`
+   - `pubspec.yaml`: `version: VERSION_NAME+VERSION_CODE`
 
 2. **Build:**
    ```bash
@@ -225,8 +216,3 @@ Per un rilascio veloce, usa questo template:
 4. **Carica su Google Play Console** e compila le note di rilascio
 
 5. **Pubblica!**
-
----
-
-**Ultimo aggiornamento:** Versione 1.1.7 (Version Code: 6)
-**Prossimo rilascio:** Versione 1.1.8 (Version Code: 7) 

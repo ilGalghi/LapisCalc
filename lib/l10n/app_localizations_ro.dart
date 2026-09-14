@@ -184,6 +184,28 @@ class AppLocalizationsRo extends AppLocalizations {
   String get clearedHistory => 'Istoric șters';
 
   @override
+  String get historyEmpty => 'Istoricul este gol';
+
+  @override
+  String get syntaxError => 'Eroare de sintaxă';
+
+  @override
+  String get appVersion => 'Versiunea aplicației';
+
+  @override
+  String get appDescription =>
+      'O aplicație simplă de calcul și conversie cu Material Design 3';
+
+  @override
+  String get developer => 'Dezvoltator';
+
+  @override
+  String get copyright => 'Drepturi de autor';
+
+  @override
+  String get licenses => 'Licențe';
+
+  @override
   String get onlyforConvertors =>
       'Aceste setări sunt exclusiv pentru convertizoare de unități';
 
@@ -197,7 +219,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get leaveReview => 'Lasă o recenzie';
 
   @override
-  String get buyMeCoffee => 'Buy me a coffee!';
+  String get buyMeCoffee => 'Cumpără-mi o cafea!';
 
   @override
   String get energy => 'Energie';

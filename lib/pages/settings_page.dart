@@ -11,23 +11,14 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-
 import '../models/settings_model.dart';
 import '../pages/calc/standard_calc.dart';
-import 'package:lapiscalc/main.dart';
-
-
-
-
-
 
 class SettingsPage extends StatelessWidget {
   final StdCalc calculator;
 
   SettingsPage({required this.calculator, Key? key}) : super(key: key);
-  final TextEditingController sigFigInput = TextEditingController();
   AndroidDeviceInfo? androidInfo; // Declare androidInfo as a nullable variable
-
 
   Route _createRoute(Widget widget) {
     return PageRouteBuilder(
@@ -44,7 +35,6 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-
   void _clearHistory(BuildContext context) {
     // Trova l'istanza del widget StdCalc nel widget tree
     StdCalc stdCalcWidget = context.findAncestorWidgetOfExactType<StdCalc>()!;
@@ -53,15 +43,15 @@ class SettingsPage extends StatelessWidget {
     stdCalcWidget.clearHistory();
   }
 
-
   //SELEZIONA LINGUA
-  Future<void> _setSelectedLanguage(String languageCode, BuildContext context) async {
+  Future<void> _setSelectedLanguage(
+    String languageCode,
+    BuildContext context,
+  ) async {
     final settings = Provider.of<SettingsModel>(context, listen: false);
     settings.selectedLanguageCode = languageCode;
     await settings.save();
-    MyApp.setLocale(context, Locale(languageCode));
   }
-
 
   //INFORMAZIONI DISPOSITIVO
   Future<void> _initDeviceInfo() async {
@@ -79,7 +69,6 @@ class SettingsPage extends StatelessWidget {
   Future<PackageInfo> _getPackageInfo() async {
     return await PackageInfo.fromPlatform();
   }
-
 
   //MODULO INVIO EMAIL ---------------------------------------------------------
   Future<void> _sendEmail(BuildContext context) async {
@@ -124,11 +113,12 @@ class SettingsPage extends StatelessWidget {
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: 'ilgalghi.developer@gmail.com',
-      query: 'subject=SUPPORT: LapisCalc&body=\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
+      query:
+          'subject=SUPPORT: LapisCalc&body=\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
           '-------------------------------------------------------------------'
           '-------------------------------------------------------------------'
           '-------------------------------------------------------------------'
-          '\nDEBUG INFO:\n$deviceInfoText'
+          '\nDEBUG INFO:\n$deviceInfoText',
     );
 
     try {
@@ -136,11 +126,9 @@ class SettingsPage extends StatelessWidget {
     } catch (e) {
       throw Exception('Could not launch debug email.');
     }
-
   }
 
   //----------------------------------------------------------------------------
-
 
   //GESTIONE WIDGET
   @override
@@ -157,7 +145,6 @@ class SettingsPage extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-
                 //THEME --------------------------------------------------------
                 ListTile(
                   leading: const Icon(Icons.color_lens_outlined),
@@ -169,49 +156,17 @@ class SettingsPage extends StatelessWidget {
                 //SIGNIFICANT FIGURES ------------------------------------------
                 ListTile(
                   leading: const Icon(Icons.exposure_zero_outlined),
-                  title: Text(AppLocalizations.of(context)!.setsignificantfigures),
-                  onTap: () => showDialog(
-                      context: context,
-                      builder: (context) {
-                        sigFigInput.text = settings.sigFig.toString();
-                        return Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: AlertDialog(
-                            title: Text(AppLocalizations.of(context)!.setsignificantfigures,
-                              style: Theme.of(context).textTheme.headlineMedium,
-                            ),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(AppLocalizations.of(context)!.onlyforConvertors),
-                                    //"This settings is exclusively for unit convertors"),
-                                TextField(
-                                  textAlign: TextAlign.end,
-                                  keyboardType: TextInputType.number,
-                                  controller: sigFigInput,
-                                  onChanged: (value) => value.isNotEmpty
-                                      ? settings.sigFig = int.parse(value)
-                                      : settings.sigFig = 7,
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(AppLocalizations.of(context)!.cancel),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  settings.sigFig = int.parse(sigFigInput.text);
-                                  Navigator.pop(context);
-                                },
-                                child: Text(AppLocalizations.of(context)!.set),
-                              ),
-                            ],
-                          ),
-                        );
+                  title: Text(
+                    AppLocalizations.of(context)!.setsignificantfigures,
+                  ),
+                  onTap: () =>
+                      showDialog<int>(
+                        context: context,
+                        builder: (context) => _SignificantFiguresDialog(
+                          initialValue: settings.sigFig,
+                        ),
+                      ).then((value) {
+                        if (value != null) settings.sigFig = value;
                       }),
                 ),
 
@@ -232,26 +187,28 @@ class SettingsPage extends StatelessWidget {
                     // Chiamata  alla funzione che cancella la cronologia
                     calculator.clearHistory();
                     Fluttertoast.showToast(
-                        msg: AppLocalizations.of(context)!.clearedHistory,
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white,
-                        fontSize: 18.0,
-                        webBgColor: "#000", // Colore di sfondo per piattaforma web
-                        webPosition: "center", // Posizione del toast per piattaforma web
-
+                      msg: AppLocalizations.of(context)!.clearedHistory,
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 18.0,
+                      webBgColor:
+                          "#000", // Colore di sfondo per piattaforma web
+                      webPosition:
+                          "center", // Posizione del toast per piattaforma web
                     );
                   },
                 ),
 
                 //LANGUAGE -----------------------------------------------------
                 ListTile(
-
                   leading: const Icon(Icons.language),
                   title: Text(AppLocalizations.of(context)!.language),
-                  subtitle: Text(AppLocalizations.of(context)!.selectedLanguage),
+                  subtitle: Text(
+                    AppLocalizations.of(context)!.selectedLanguage,
+                  ),
                   onTap: () => showDialog(
                     context: context,
                     builder: (context) {
@@ -276,7 +233,6 @@ class SettingsPage extends StatelessWidget {
                               onTap: () async {
                                 await _setSelectedLanguage('it', context);
                                 Navigator.pop(context);
-
                               },
                             ),
                             ListTile(
@@ -309,16 +265,17 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
 
-
-
                 // RATE REVIEW -------------------------------------------------
                 ListTile(
                   leading: const Icon(Icons.star),
                   title: Text(AppLocalizations.of(context)!.leaveReview),
-                    onTap: () async {
-                      final InAppReview inAppReview = InAppReview.instance;
-                      inAppReview.openStoreListing(appStoreId: '...', microsoftStoreId: '...');
-                    }
+                  onTap: () async {
+                    final InAppReview inAppReview = InAppReview.instance;
+                    inAppReview.openStoreListing(
+                      appStoreId: '...',
+                      microsoftStoreId: '...',
+                    );
+                  },
 
                   // NORMALE LINK ----------------------------------------------
                   /*
@@ -345,15 +302,16 @@ class SettingsPage extends StatelessWidget {
                   //------------------------------------------------------------
                 ),
 
-
                 //DONATIONS ----------------------------------------------------
                 ListTile(
                   leading: const Icon(Icons.coffee),
                   title: Text(AppLocalizations.of(context)!.buyMeCoffee),
                   onTap: () async {
                     const url = 'https://www.paypal.me/ilgalghi';
-                    if (!await launchUrl(Uri.parse(url),
-                        mode: LaunchMode.externalApplication)) {
+                    if (!await launchUrl(
+                      Uri.parse(url),
+                      mode: LaunchMode.externalApplication,
+                    )) {
                       throw Exception('Could not launch $url');
                     }
                   },
@@ -377,14 +335,74 @@ class SettingsPage extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
 }
 
+class _SignificantFiguresDialog extends StatefulWidget {
+  const _SignificantFiguresDialog({required this.initialValue});
 
+  final int initialValue;
+
+  @override
+  State<_SignificantFiguresDialog> createState() =>
+      _SignificantFiguresDialogState();
+}
+
+class _SignificantFiguresDialogState extends State<_SignificantFiguresDialog> {
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.initialValue.toString(),
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final value = int.tryParse(_controller.text);
+    final valid = SettingsModel.isValidSigFig(value);
+    const range = '${SettingsModel.minSigFig}–${SettingsModel.maxSigFig}';
+    return AlertDialog(
+      title: Text(l10n.setsignificantfigures),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(l10n.onlyforConvertors),
+          TextField(
+            controller: _controller,
+            textAlign: TextAlign.end,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              helperText: range,
+              errorText: valid ? null : range,
+            ),
+            onChanged: (_) => setState(() {}),
+            onSubmitted: (_) {
+              if (valid) Navigator.pop(context, value);
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.cancel),
+        ),
+        TextButton(
+          onPressed: valid ? () => Navigator.pop(context, value) : null,
+          child: Text(l10n.set),
+        ),
+      ],
+    );
+  }
+}
 
 //TEMA -------------------------------------------------------------------------
 class ThemePage extends StatefulWidget {
@@ -395,8 +413,9 @@ class ThemePage extends StatefulWidget {
 }
 
 class _ThemePageState extends State<ThemePage> {
-  static const platform =
-  MethodChannel('com.ilgalghi.lapiscalc/androidversion');
+  static const platform = MethodChannel(
+    'com.ilgalghi.lapiscalc/androidversion',
+  );
 
   int av = 0;
   Future<int> androidVersion() async {
@@ -423,9 +442,7 @@ class _ThemePageState extends State<ThemePage> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar.large(
-            title: Text(AppLocalizations.of(context)!.theme),
-          ),
+          SliverAppBar.large(title: Text(AppLocalizations.of(context)!.theme)),
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -436,10 +453,17 @@ class _ThemePageState extends State<ThemePage> {
                   child: SegmentedButton(
                     segments: [
                       ButtonSegment(
-                          value: ThemeMode.system, label: Text(AppLocalizations.of(context)!.system)),
+                        value: ThemeMode.system,
+                        label: Text(AppLocalizations.of(context)!.system),
+                      ),
                       ButtonSegment(
-                          value: ThemeMode.light, label: Text(AppLocalizations.of(context)!.light)),
-                      ButtonSegment(value: ThemeMode.dark, label: Text(AppLocalizations.of(context)!.dark)),
+                        value: ThemeMode.light,
+                        label: Text(AppLocalizations.of(context)!.light),
+                      ),
+                      ButtonSegment(
+                        value: ThemeMode.dark,
+                        label: Text(AppLocalizations.of(context)!.dark),
+                      ),
                     ],
                     selected: {settings.themeMode},
                     onSelectionChanged: (p0) {
@@ -455,25 +479,30 @@ class _ThemePageState extends State<ThemePage> {
                       onChanged: av >= 31
                           ? (value) => settings.isSystemColor = value
                           : null,
-                      title: Text(AppLocalizations.of(context)!.usesystemcolorscheme),
-                      subtitle: Text(settings.isSystemColor
-                          ? (AppLocalizations.of(context)!.usingsystemdynamiccolor)
-                          : (AppLocalizations.of(context)!.usingdefaultcolorscheme)),
+                      title: Text(
+                        AppLocalizations.of(context)!.usesystemcolorscheme,
+                      ),
+                      subtitle: Text(
+                        settings.isSystemColor
+                            ? (AppLocalizations.of(
+                                context,
+                              )!.usingsystemdynamiccolor)
+                            : (AppLocalizations.of(
+                                context,
+                              )!.usingdefaultcolorscheme),
+                      ),
                     ),
                   ],
-                )
-
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
 }
 //------------------------------------------------------------------------------
-
-
 
 //INFO (About)
 //------------------------------------------------------------------------------
@@ -485,61 +514,100 @@ class About extends StatefulWidget {
 }
 
 class _AboutState extends State<About> {
+  late final Future<PackageInfo> _packageInfo;
+
   @override
   void initState() {
     super.initState();
+    _packageInfo = PackageInfo.fromPlatform();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(slivers: [
-        SliverAppBar.large(
-          title: Text(AppLocalizations.of(context)!.about),
-        ),
-        SliverToBoxAdapter(
-          child: ListView(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              const ListTile(
-                leading: Icon(Icons.info_outline),
-                title: Text("App Version"),
-                subtitle: Text("1.2.1"),          //da modificare ogni release
-              ),
-              ListTile(
-                leading: const Icon(Icons.info_outline),
-                title: const Text("Licenses"),
-                onTap: () => showLicensePage(
-                    context: context,
-                    applicationName: "LapisCalc",
-                    applicationVersion: "1.2.1"),     //da modificare ogni release
-              ),
-              /*
-              ListTile(
-                leading: SvgPicture.asset(
-                  Theme.of(context).brightness == Brightness.light
-                      ? "assets/github-mark.svg"
-                      : "assets/github-mark-white.svg",
-                  semanticsLabel: 'Github',
-                  height: 24,
-                  width: 24,
-                ),
-                title: const Text("Github"),
-                onTap: () async {
-                  const url = 'https://github.com/boredcodebyk/mintcalc';
-                  if (!await launchUrl(Uri.parse(url),
-                      mode: LaunchMode.externalApplication)) {
-                    throw Exception('Could not launch $url');
-                  }
-                },
-              ),
-              */
+    return FutureBuilder<PackageInfo>(
+      future: _packageInfo,
+      builder: (context, snapshot) {
+        final info = snapshot.data;
+        final version = info == null
+            ? ''
+            : '${info.version} (${info.buildNumber})';
 
+        return Scaffold(
+          body: CustomScrollView(
+            slivers: [
+              SliverAppBar.large(
+                title: Text(AppLocalizations.of(context)!.about),
+              ),
+              SliverToBoxAdapter(
+                child: ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.calculate_outlined),
+                      title: const Text("LapisCalc"),
+                      subtitle: Text(
+                        AppLocalizations.of(context)!.appDescription,
+                      ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.info_outline),
+                      title: Text(AppLocalizations.of(context)!.appVersion),
+                      subtitle: Text(version),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.person_outline),
+                      title: Text(AppLocalizations.of(context)!.developer),
+                      subtitle: const Text("Leonardo Galgano (ilGalghi)"),
+                    ),
+                    ListTile(
+                      leading: SvgPicture.asset(
+                        Theme.of(context).brightness == Brightness.light
+                            ? "assets/github-mark.svg"
+                            : "assets/github-mark-white.svg",
+                        semanticsLabel: 'GitHub',
+                        height: 24,
+                        width: 24,
+                      ),
+                      title: const Text("GitHub"),
+                      onTap: () async {
+                        const url = 'https://github.com/ilGalghi/LapisCalc';
+                        if (!await launchUrl(
+                          Uri.parse(url),
+                          mode: LaunchMode.externalApplication,
+                        )) {
+                          throw Exception('Could not launch $url');
+                        }
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.description_outlined),
+                      title: Text(AppLocalizations.of(context)!.licenses),
+                      enabled: info != null,
+                      onTap: info == null
+                          ? null
+                          : () => showLicensePage(
+                              context: context,
+                              applicationName: "LapisCalc",
+                              applicationVersion: version,
+                            ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.copyright_outlined),
+                      title: Text(AppLocalizations.of(context)!.copyright),
+                      subtitle: const Text(
+                        "© 2026 ilGalghi\n"
+                        "GNU General Public License\n"
+                        "Version 3, 29 June 2007",
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
-        ),
-      ]),
+        );
+      },
     );
   }
 }
@@ -550,4 +618,3 @@ extension StringExtension on String {
     return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }
-

@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsModel extends ChangeNotifier {
+  static const minSigFig = 1;
+  static const maxSigFig = 21;
+
+  static bool isValidSigFig(int? value) =>
+      value != null && value >= minSigFig && value <= maxSigFig;
+
   bool _isSystemColor = false;
   ThemeMode _themeMode = ThemeMode.system;
   int _sigFig = 7;
@@ -36,7 +42,7 @@ class SettingsModel extends ChangeNotifier {
 
   int get sigFig => _sigFig;
   set sigFig(int value) {
-    if (_sigFig == value) return;
+    if (!isValidSigFig(value) || _sigFig == value) return;
     _sigFig = value;
     notifyListeners();
     save();
@@ -58,8 +64,6 @@ class SettingsModel extends ChangeNotifier {
     save();
   }
 
-
-
   Future<void> save() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('isSystemColor', _isSystemColor);
@@ -70,17 +74,22 @@ class SettingsModel extends ChangeNotifier {
     prefs.setString('selectedLanguageCode', _selectedLanguageCode);
   }
 
-  Future<void> load() async {
+  Future<void> load({String defaultLanguageCode = 'en'}) async {
     final prefs = await SharedPreferences.getInstance();
     _isSystemColor = prefs.getBool('isSystemColor') ?? false;
     _themeMode = ThemeMode.values.firstWhere(
       (e) => e.toString() == prefs.getString('themeMode'),
       orElse: () => ThemeMode.system,
     );
-    _sigFig = prefs.getInt('sigFig') ?? 7;
+    final savedSigFig = prefs.getInt('sigFig');
+    _sigFig = isValidSigFig(savedSigFig) ? savedSigFig! : 7;
     _customColor = prefs.getInt('customColor') ?? 16777215;
     _firstLaunch = prefs.getBool('firstLaunch') ?? true;
-    _selectedLanguageCode = prefs.getString('selectedLanguageCode') ?? 'en';
+    final savedLanguageCode = prefs.getString('selectedLanguageCode');
+    _selectedLanguageCode = savedLanguageCode ?? defaultLanguageCode;
+    if (savedLanguageCode == null) {
+      await prefs.setString('selectedLanguageCode', _selectedLanguageCode);
+    }
     notifyListeners();
   }
 }

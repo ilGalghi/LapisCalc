@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import '../../utils/numeric_input.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +13,6 @@ import '../settings_page.dart';
 
 class PowerConv extends StatefulWidget {
   const PowerConv({super.key});
-  static String pageTitle = "Power";
 
   @override
   State<PowerConv> createState() => _PowerConvState();
@@ -46,7 +47,7 @@ class _PowerConvState extends State<PowerConv> {
 
   void _recalculate() {
     if (isInputA) {
-      if (inputA.text.isNotEmpty && double.tryParse(inputA.text) != null) {
+      if (double.tryParse(inputA.text)?.isFinite ?? false) {
         power.convert(selectedpowerA, double.parse(inputA.text));
         units = power.getAll();
         _convValueBuild(units);
@@ -54,12 +55,10 @@ class _PowerConvState extends State<PowerConv> {
       } else {
         units = power.getAll();
         _convValueBuild(units);
-        if (inputA.text.isEmpty) {
-          inputB.clear();
-        }
+        inputB.clear();
       }
     } else {
-      if (inputB.text.isNotEmpty && double.tryParse(inputB.text) != null) {
+      if (double.tryParse(inputB.text)?.isFinite ?? false) {
         power.convert(selectedpowerB, double.parse(inputB.text));
         units = power.getAll();
         _convValueBuild(units);
@@ -67,9 +66,7 @@ class _PowerConvState extends State<PowerConv> {
       } else {
         units = power.getAll();
         _convValueBuild(units);
-        if (inputB.text.isEmpty) {
-          inputA.clear();
-        }
+        inputA.clear();
       }
     }
   }
@@ -137,33 +134,7 @@ class _PowerConvState extends State<PowerConv> {
       });
     } else {
       setState(() {
-        if (isInputA) {
-          if (inputA.selection.start >= 0 && inputA.selection.end >= 0) {
-            inputA.value = TextEditingValue(
-              text: inputA.text.replaceRange(
-                  inputA.selection.start, inputA.selection.end, val.toString()),
-              selection: TextSelection.collapsed(
-                  offset: inputA.selection.start + val.toString().length),
-            );
-          } else {
-            inputA.text = inputA.text + val.toString();
-            inputA.selection = TextSelection.fromPosition(
-                TextPosition(offset: inputA.text.length));
-          }
-        } else {
-          if (inputB.selection.start >= 0 && inputB.selection.end >= 0) {
-            inputB.value = TextEditingValue(
-              text: inputB.text.replaceRange(
-                  inputB.selection.start, inputB.selection.end, val.toString()),
-              selection: TextSelection.collapsed(
-                  offset: inputB.selection.start + val.toString().length),
-            );
-          } else {
-            inputB.text = inputB.text + val.toString();
-            inputB.selection = TextSelection.fromPosition(
-                TextPosition(offset: inputB.text.length));
-          }
-        }
+        insertNumericText(isInputA ? inputA : inputB, val.toString());
         _recalculate();
       });
     }
@@ -391,7 +362,7 @@ class _PowerConvState extends State<PowerConv> {
                 });
               },
               inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+                const NumericInputFormatter()
               ],
               style: TextStyle(
                 fontSize: fontsize,
@@ -444,7 +415,7 @@ class _PowerConvState extends State<PowerConv> {
                 });
               },
               inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+                const NumericInputFormatter()
               ],
               style: TextStyle(
                 fontSize: fontsize,

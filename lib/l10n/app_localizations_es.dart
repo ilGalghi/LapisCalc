@@ -185,6 +185,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clearedHistory => 'Historial borrado';
 
   @override
+  String get historyEmpty => 'El historial está vacío';
+
+  @override
+  String get syntaxError => 'Error de sintaxis';
+
+  @override
+  String get appVersion => 'Versión de la aplicación';
+
+  @override
+  String get appDescription =>
+      'Una aplicación sencilla de calculadora y conversión con Material Design 3';
+
+  @override
+  String get developer => 'Desarrollador';
+
+  @override
+  String get copyright => 'Derechos de autor';
+
+  @override
+  String get licenses => 'Licencias';
+
+  @override
   String get onlyforConvertors =>
       'Esta configuración es exclusivamente para convertidores de unidades';
 
@@ -198,7 +220,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get leaveReview => 'Deja una reseña';
 
   @override
-  String get buyMeCoffee => 'Buy me a coffee!';
+  String get buyMeCoffee => '¡Invítame a un café!';
 
   @override
   String get energy => 'Energía';

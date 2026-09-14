@@ -2,13 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:math_expressions/math_expressions.dart' hide Stack;
+import 'package:lapiscalc/l10n/app_localizations.dart';
+import 'package:rational/rational.dart';
+
+import '../../utils/exact_calculator.dart';
+import '../../utils/numeric_input.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StdCalc extends StatefulWidget {
   const StdCalc({super.key});
-  static String pageTitle = "Standard";
 
   @override
   State<StdCalc> createState() => _StdCalcState();
@@ -25,8 +28,26 @@ class _StdCalcState extends State<StdCalc> {
   final ScrollController _inputScroll = ScrollController();
   final FocusNode _inputFocus = FocusNode();
 
-  RegExp bracketsCheck = RegExp(r'(?<=\d)(?=\()|(?<=\))(?=\d)|(?<=\))(?=\()');
   var output = "";
+  Rational? _lastResult;
+  String? _lastResultText;
+
+  void _trackResultEdits() {
+    final text = _lastResultText;
+    if (text == null) return;
+    // Retain the full value only while the displayed result is an unchanged
+    // first operand. Editing its digits starts a new numeric input.
+    final current = input.text;
+    if (current == text ||
+        (current.startsWith(text) &&
+            RegExp(
+              r'^[+\-*/×÷%()]',
+            ).hasMatch(current.substring(text.length)))) {
+      return;
+    }
+    _lastResult = null;
+    _lastResultText = null;
+  }
 
   // HISTORY
   void addToHistory(input, output) async {
@@ -54,113 +75,56 @@ class _StdCalcState extends State<StdCalc> {
     return listHistory;
   }
 
-
-
   void scrollWithCursor(String val) {
     String blankText = "";
     final isLong = val.length > blankText.length;
     if (isLong) {
-      _inputScroll.animateTo(_inputScroll.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300), curve: Curves.ease);
+      _inputScroll.animateTo(
+        _inputScroll.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease,
+      );
     }
     print(_inputScroll.position.maxScrollExtent);
     print(input.selection.extentOffset);
   }
 
-  String _formatResult(dynamic value) {
-    if (value is! num || value.isNaN) return "Error";
-    if (value.isInfinite) return value.isNegative ? "-Infinity" : "Infinity";
-
-    double d = value.toDouble();
-    // Use 12 significant digits to eliminate floating point inaccuracies (e.g. 5.3999999999999995 -> 5.4)
-    double cleaned = double.parse(d.toStringAsPrecision(12));
-
-    if (cleaned == cleaned.roundToDouble() && cleaned.abs() < 1e15) {
-      return cleaned.toInt().toString();
-    }
-
-    String str = cleaned.toString();
-    if (str.endsWith(".0")) {
-      str = str.substring(0, str.length - 2);
-    }
-    return str;
-  }
-
-  String _processPercentage(String inputStr) {
-    var s = inputStr;
-
-    // 1. Infix percentage: e.g. 9%60 or 9%(60) -> (9/100)*60
-    s = s.replaceAllMapped(
-      RegExp(r'((?:[0-9]+(?:\.[0-9]+)?|\([^\(\)]+\)))%(?=[\d\(])'),
-      (m) => '(${m[1]}/100)*',
-    );
-
-    // 2. Additive/Subtractive percentage: e.g. 10 - 20% -> 10 - (10 * 20 / 100) = 8
-    final addSubPercentRegex = RegExp(
-      r'((?:[0-9]+(?:\.[0-9]+)?|\([^\(\)]+\)))\s*([\+\-])\s*([0-9]+(?:\.[0-9]+)?|\([^\(\)]+\))%',
-    );
-    while (addSubPercentRegex.hasMatch(s)) {
-      s = s.replaceAllMapped(addSubPercentRegex, (m) {
-        final base = m[1];
-        final op = m[2];
-        final percent = m[3];
-        return '$base $op ($base * $percent / 100)';
-      });
-    }
-
-    // 3. Standalone / multiplicative percentage: e.g. 50% -> (50/100), 10 * 20% -> 10 * (20/100)
-    s = s.replaceAllMapped(
-      RegExp(r'((?:[0-9]+(?:\.[0-9]+)?|\([^\(\)]+\)))%'),
-      (m) => '(${m[1]}/100)',
-    );
-
-    // 4. Any remaining stray %
-    s = s.replaceAll('%', '/100');
-
-    return s;
-  }
-
   void _doMath(String val) {
     if (val == "=") {
       if (input.text.isNotEmpty) {
-        var userinput = input.text
-            .replaceAll("\u00d7", "*")
-            .replaceAll("÷", "/");
-
-        userinput = _processPercentage(userinput);
-        userinput = userinput.replaceAll(bracketsCheck, "*");
-
-        // Auto-close any open parentheses
-        int openP = 0;
-        int closeP = 0;
-        for (int i = 0; i < userinput.length; i++) {
-          if (userinput[i] == '(') openP++;
-          if (userinput[i] == ')') closeP++;
+        var userinput = input.text;
+        final previousResult = _lastResult;
+        if (previousResult != null && _lastResultText != null) {
+          userinput = '(ans)${userinput.substring(_lastResultText!.length)}';
         }
-        if (openP > closeP) {
-          userinput += ')' * (openP - closeP);
-        }
-
-        Parser P = Parser();
         try {
-          Expression expression = P.parse(userinput);
-
-          ContextModel cm = ContextModel();
-          var finalvalue = expression.evaluate(EvaluationType.REAL, cm);
-          final formattedOutput = _formatResult(finalvalue);
+          final finalvalue = ExactCalculator.evaluate(
+            userinput,
+            previous: previousResult,
+          );
+          final formattedOutput = ExactCalculator.format(finalvalue);
           setState(() {
             output = formattedOutput;
           });
-          addToHistory(userinput, output);
+          // History must remain evaluable without the transient ans binding.
+          final historyInput = previousResult == null
+              ? userinput
+              : userinput.replaceAll(
+                  'ans',
+                  '(${ExactCalculator.serialize(previousResult)})',
+                );
+          addToHistory(historyInput, output);
           setState(() {
             input.value = TextEditingValue(
               text: output,
               selection: TextSelection.collapsed(offset: output.length),
             );
+            _lastResult = finalvalue;
+            _lastResultText = output;
           });
         } catch (e) {
           setState(() {
-            output = "Syntax Error";
+            output = AppLocalizations.of(context)!.syntaxError;
           });
         }
       }
@@ -202,7 +166,9 @@ class _StdCalcState extends State<StdCalc> {
             );
           } else {
             input.text = input.text + toInsert;
-            input.selection = TextSelection.collapsed(offset: input.text.length);
+            input.selection = TextSelection.collapsed(
+              offset: input.text.length,
+            );
           }
         });
       } else {
@@ -217,23 +183,15 @@ class _StdCalcState extends State<StdCalc> {
         );
       }
     } else {
-      if (input.selection.isCollapsed) {
-        setState(() {
-          input.value = input.value
-              .replaced(TextRange.collapsed(input.selection.baseOffset), val);
-        });
-      } else {
-        setState(() {
-          input.value = input.value.replaced(
-              TextRange(start: input.selection.start, end: input.selection.end),
-              val);
-        });
-        input.selection = TextSelection.fromPosition(
-            TextPosition(offset: input.selection.end));
-      }
+      setState(() {
+        insertNumericText(input, val, expression: true);
+      });
     }
-    _inputScroll.animateTo(_inputScroll.position.maxScrollExtent + 1,
-        duration: const Duration(milliseconds: 300), curve: Curves.ease);
+    _inputScroll.animateTo(
+      _inputScroll.position.maxScrollExtent + 1,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.ease,
+    );
   }
 
   void _bkspc() {
@@ -242,29 +200,36 @@ class _StdCalcState extends State<StdCalc> {
         if (input.selection.baseOffset == input.text.length) {
           setState(() {
             input.value = TextEditingValue(
-                text: input.text.substring(0, input.text.length - 1));
+              text: input.text.substring(0, input.text.length - 1),
+            );
           });
           input.selection = TextSelection.fromPosition(
-              TextPosition(offset: input.text.length));
+            TextPosition(offset: input.text.length),
+          );
         } else {
           setState(() {
             input.value = input.value.replaced(
-                TextRange(
-                    start: input.selection.baseOffset - 1,
-                    end: input.selection.baseOffset),
-                "");
+              TextRange(
+                start: input.selection.baseOffset - 1,
+                end: input.selection.baseOffset,
+              ),
+              "",
+            );
           });
           input.selection = TextSelection.fromPosition(
-              TextPosition(offset: input.selection.start));
+            TextPosition(offset: input.selection.start),
+          );
         }
       } else {
         setState(() {
           input.value = input.value.replaced(
-              TextRange(start: input.selection.start, end: input.selection.end),
-              "");
+            TextRange(start: input.selection.start, end: input.selection.end),
+            "",
+          );
         });
         input.selection = TextSelection.fromPosition(
-            TextPosition(offset: input.selection.end));
+          TextPosition(offset: input.selection.end),
+        );
       }
     } else {
       setState(() {
@@ -277,9 +242,11 @@ class _StdCalcState extends State<StdCalc> {
   @override
   void initState() {
     super.initState();
+    input.addListener(_trackResultEdits);
     setState(() {
-      input.value =
-          const TextEditingValue(selection: TextSelection.collapsed(offset: 0));
+      input.value = const TextEditingValue(
+        selection: TextSelection.collapsed(offset: 0),
+      );
     });
   }
 
@@ -308,16 +275,12 @@ class _StdCalcState extends State<StdCalc> {
                         Expanded(
                           child: Column(
                             children: [
-                              Expanded(
-                                child: _inputView(context),
-                              ),
-                              Expanded(
-                                child: _history(context, false),
-                              ),
+                              Expanded(child: _inputView(context)),
+                              Expanded(child: _history(context, false)),
                             ],
                           ),
                         ),
-                        Expanded(child: _keypad(context, 1.046))
+                        Expanded(child: _keypad(context, 1.046)),
                       ],
                     );
                   } else {
@@ -328,16 +291,12 @@ class _StdCalcState extends State<StdCalc> {
                         Expanded(
                           child: Row(
                             children: [
-                              Expanded(
-                                child: _history(context, false),
-                              ),
-                              Expanded(
-                                child: _inputView(context),
-                              ),
+                              Expanded(child: _history(context, false)),
+                              Expanded(child: _inputView(context)),
                             ],
                           ),
                         ),
-                        _keypad(context, 2)
+                        _keypad(context, 2),
                       ],
                     );
                   }
@@ -356,11 +315,8 @@ class _StdCalcState extends State<StdCalc> {
                 } else {
                   return Column(
                     children: [
-                      Expanded(
-                        flex: 1,
-                        child: _inputView(context),
-                      ),
-                      _keypad(context, (1 / 1))
+                      Expanded(flex: 1, child: _inputView(context)),
+                      _keypad(context, (1 / 1)),
                     ],
                   );
                 }
@@ -395,50 +351,48 @@ class _StdCalcState extends State<StdCalc> {
                 focusNode: _inputFocus,
                 scrollController: _inputScroll,
                 inputFormatters: [
-                  FilteringTextInputFormatter.deny(RegExp(r'[a-z] [A-Z] :$'))
+                  const NumericInputFormatter(expression: true),
                 ],
-                style: const TextStyle(
-                  fontSize: 48,
-                ),
+                style: const TextStyle(fontSize: 48),
                 keyboardType: TextInputType.none,
               ),
               const Divider(),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                output.toString(),
-                style: const TextStyle(
-                  fontSize: 30,
-                ),
-              ),
+              const SizedBox(height: 10),
+              Text(output.toString(), style: const TextStyle(fontSize: 30)),
             ],
           ),
         ),
-        getDeviceType(Size(MediaQuery.of(context).size.width,
-                    MediaQuery.of(context).size.height)) ==
+        getDeviceType(
+                  Size(
+                    MediaQuery.of(context).size.width,
+                    MediaQuery.of(context).size.height,
+                  ),
+                ) ==
                 DeviceScreenType.tablet
             ? const SizedBox.shrink()
             : Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: IconButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => Dialog.fullscreen(
-                            child: Column(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => Dialog.fullscreen(
+                        child: Column(
                           children: [
                             AppBar(
                               leading: IconButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  icon: const Icon(Icons.close)),
+                                onPressed: () => Navigator.pop(context),
+                                icon: const Icon(Icons.close),
+                              ),
                             ),
                             Expanded(child: _history(context, true)),
                           ],
-                        )),
-                      );
-                    },
-                    icon: const Icon(Icons.history)),
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.history),
+                ),
               ),
       ],
     );
@@ -448,25 +402,24 @@ class _StdCalcState extends State<StdCalc> {
     return GridView(
       padding: const EdgeInsets.all(8),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-          childAspectRatio: cellSizeRatio),
+        crossAxisCount: 4,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: cellSizeRatio,
+      ),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: [
         FilledButton(
-            onPressed: () {
-              setState(() {
-                input.clear();
-                output = input.text;
-                HapticFeedback.lightImpact();
-              });
-            },
-            child: const Text(
-              "C",
-              style: TextStyle(fontSize: 32),
-            )),
+          onPressed: () {
+            setState(() {
+              input.clear();
+              output = input.text;
+              HapticFeedback.lightImpact();
+            });
+          },
+          child: const Text("C", style: TextStyle(fontSize: 32)),
+        ),
         _buildCalcButton("()", true),
         _buildCalcButton("%", true),
         _buildCalcButton("÷", true),
@@ -485,15 +438,13 @@ class _StdCalcState extends State<StdCalc> {
         _buildCalcButton("0", false),
         _buildCalcButton(".", false),
         FilledButton.tonal(
-            onPressed: () {
-              _bkspc();
+          onPressed: () {
+            _bkspc();
 
-              HapticFeedback.lightImpact();
-            },
-            child: const Icon(
-              Icons.backspace_outlined,
-              size: 32,
-            )),
+            HapticFeedback.lightImpact();
+          },
+          child: const Icon(Icons.backspace_outlined, size: 32),
+        ),
         _buildCalcButton("=", true),
       ],
     );
@@ -509,45 +460,47 @@ class _StdCalcState extends State<StdCalc> {
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.all(8),
       child: FutureBuilder(
-          future: listHistory(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: Text("History is Empty"),
-              );
-            }
-            return ListView.builder(
-              itemCount: snapshot.data?.length,
-              itemBuilder: (context, index) {
-                var math = snapshot.data?[index];
-                return ListTile(
-                  title: InkWell(
-                    onTap: () {
-                      input.clear();
-
-                      setState(() {
-                        output = "";
-                        input.value = input.value.replaced(
-                            TextRange.collapsed(input.selection.baseOffset),
-                            math["input"]);
-                      });
-                      if (isPhone) {
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Text(
-                      math["input"],
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    ),
-                  ),
-                  subtitle: Text(
-                    math["output"],
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                );
-              },
+        future: listHistory(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(AppLocalizations.of(context)!.historyEmpty),
             );
-          }),
+          }
+          return ListView.builder(
+            itemCount: snapshot.data?.length,
+            itemBuilder: (context, index) {
+              var math = snapshot.data?[index];
+              return ListTile(
+                title: InkWell(
+                  onTap: () {
+                    input.clear();
+
+                    setState(() {
+                      output = "";
+                      input.value = input.value.replaced(
+                        TextRange.collapsed(input.selection.baseOffset),
+                        math["input"],
+                      );
+                    });
+                    if (isPhone) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Text(
+                    math["input"],
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                ),
+                subtitle: Text(
+                  math["output"],
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -567,24 +520,14 @@ class _StdCalcState extends State<StdCalc> {
               HapticFeedback.lightImpact();
               _doMath(valb);
             },
-            child: Text(
-              val,
-              style: const TextStyle(
-                fontSize: 32,
-              ),
-            ),
+            child: Text(val, style: const TextStyle(fontSize: 32)),
           )
         : FilledButton.tonal(
             onPressed: () {
               HapticFeedback.lightImpact();
               _doMath(valb);
             },
-            child: Text(
-              val,
-              style: const TextStyle(
-                fontSize: 32,
-              ),
-            ),
+            child: Text(val, style: const TextStyle(fontSize: 32)),
           );
   }
 }

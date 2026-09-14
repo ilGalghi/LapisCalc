@@ -4,7 +4,6 @@ import 'package:lapiscalc/l10n/app_localizations.dart';
 
 class DateCalc extends StatefulWidget {
   const DateCalc({super.key});
-  static String pageTitle = "Date";
 
   @override
   State<DateCalc> createState() => _DateCalcState();
@@ -79,12 +78,16 @@ class _BuildDateDiffState extends State<BuildDateDiff>
   }
 
   int daysBetween(DateTime from, DateTime to) {
-    from = DateTime(from.year, from.month, from.day);
-    to = DateTime(to.year, to.month, to.day);
+    // Compare calendar dates, not elapsed local hours across DST changes.
+    from = DateTime.utc(from.year, from.month, from.day);
+    to = DateTime.utc(to.year, to.month, to.day);
     return to.difference(from).inMilliseconds.abs();
   }
 
   String formatMilliseconds(int milliseconds) {
+    if (milliseconds == 0) {
+      return "0 ${AppLocalizations.of(context)!.days}";
+    }
     // Number of milliseconds in a day, week, month, and year
     const int millisecondsPerDay = 86400000;
     const int millisecondsPerWeek = 604800000;
@@ -179,16 +182,10 @@ class _BuildDateDiffState extends State<BuildDateDiff>
             const SizedBox(
               height: 8,
             ),
-            selectedDate1.difference(selectedDate2).inMilliseconds == 0
-                ? Text(
-                    AppLocalizations.of(context)!.sameday,
-                    style: const TextStyle(fontSize: 36),
-                  )
-                : Text(
-                    formatMilliseconds(
-                        daysBetween(selectedDate1, selectedDate2)),
-                        style: const TextStyle(fontSize: 36),
-                    )
+            Text(
+              formatMilliseconds(daysBetween(selectedDate1, selectedDate2)),
+              style: const TextStyle(fontSize: 36),
+            )
           ],
         ),
       ),

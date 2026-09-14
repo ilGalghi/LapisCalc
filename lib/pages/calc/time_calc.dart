@@ -3,7 +3,6 @@ import 'package:lapiscalc/l10n/app_localizations.dart';
 
 class TimeCalc extends StatefulWidget {
   const TimeCalc({super.key});
-  static String pageTitle = "Time";
 
   @override
   State<TimeCalc> createState() => _TimeCalcState();

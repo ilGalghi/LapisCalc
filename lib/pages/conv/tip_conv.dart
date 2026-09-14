@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import '../../utils/numeric_input.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +13,6 @@ import 'package:lapiscalc/l10n/app_localizations.dart';
 
 class TipConv extends StatefulWidget {
   const TipConv({super.key});
-  static String pageTitle = "Tip";
 
   @override
   State<TipConv> createState() => _TipCalculatorState();
@@ -86,25 +87,14 @@ class _TipCalculatorState extends State<TipConv> {
 
   void _appendDigit(String digit) {
     if (_amountFocusNode.hasFocus) {
-      _amountController.text += digit;
+      insertNumericText(_amountController, digit);
     } else if (_tipPercentageFocusNode.hasFocus) {
-      _tipPercentageController.text += digit;
+      insertNumericText(_tipPercentageController, digit);
     }
     _updateTipAmount();
   }
 
-  void _appendDecimal() {
-    if (_amountFocusNode.hasFocus) {
-      if (!_amountController.text.contains('.')) {
-        _amountController.text += '.';
-      }
-    } else if (_tipPercentageFocusNode.hasFocus) {
-      if (!_tipPercentageController.text.contains('.')) {
-        _tipPercentageController.text += '.';
-      }
-    }
-    _updateTipAmount();
-  }
+  void _appendDecimal() => _appendDigit('.');
 
   void _backspace() {
     if (_amountFocusNode.hasFocus) {
@@ -268,7 +258,7 @@ class _TipCalculatorState extends State<TipConv> {
               focusNode: _amountFocusNode, // Aggiungi questa riga
               onChanged: (_) => _updateTipAmount(), // Aggiungi questa riga
               inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'[a-zA-Z:$]'))
+                const NumericInputFormatter()
               ],
               style: TextStyle(
                 fontSize: fontSize,
@@ -288,7 +278,7 @@ class _TipCalculatorState extends State<TipConv> {
               focusNode: _tipPercentageFocusNode,
               onChanged: (_) => _updateTipAmount(),
               inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'[a-zA-Z:$]'))
+                const NumericInputFormatter()
               ],
               style: TextStyle(
                 fontSize: fontSize,

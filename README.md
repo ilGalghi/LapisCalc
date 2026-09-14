@@ -7,7 +7,7 @@
 <h1 align="center">LapisCalc</h1>
 
 
-![Version](https://img.shields.io/badge/version-1.2.0-blue)
+![Version](https://img.shields.io/badge/version-1.2.2-blue)
 [![License](https://img.shields.io/badge/license-GPLv3-green)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Made with Flutter](https://img.shields.io/badge/Made%20with-Flutter-blue?logo=flutter)](https://flutter.dev/)
 
@@ -33,7 +33,7 @@ LapisCalc is a versatile Android application that combines the functionality of 
 
 | Standard Calculator | Unit Converter | Date Calculator |
 |:------------------:|:--------------:|:---------------:|
-| ![Calculator](metadata/images/phone/1.png) | ![Converter](metadata/images/phone/2.png) | ![Date](metadata/images/phone/3.png) |
+| ![Calculator](docs/images/phone/1.png) | ![Converter](docs/images/phone/2.png) | ![Date](docs/images/phone/3.png) |
 
 ## ✨ Key Features
 
@@ -82,7 +82,7 @@ This project is distributed under the **GNU General Public License v3.0**. See t
 
 
 ## 📋 Current Version
-**Version**: 1.2.0
+**Version**: 1.2.2
 
 To see recent changes, check the [CHANGELOG](CHANGELOG.md) in the metadata directory.
 

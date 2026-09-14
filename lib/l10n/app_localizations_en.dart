@@ -183,6 +183,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearedHistory => 'History cleared';
 
   @override
+  String get historyEmpty => 'History is Empty';
+
+  @override
+  String get syntaxError => 'Syntax Error';
+
+  @override
+  String get appVersion => 'App Version';
+
+  @override
+  String get appDescription =>
+      'A simple calculator and converter app with Material Design 3';
+
+  @override
+  String get developer => 'Developer';
+
+  @override
+  String get copyright => 'Copyright';
+
+  @override
+  String get licenses => 'Licenses';
+
+  @override
   String get onlyforConvertors =>
       'This settings is exclusively for unit convertors';
 

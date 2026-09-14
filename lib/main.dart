@@ -5,78 +5,53 @@ import 'package:provider/provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:lapiscalc/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import './pages/pages.dart';
 import 'models/settings_model.dart';
 
-
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final settingsmodel = SettingsModel();
-  settingsmodel.load();
+  final supportedLanguageCodes = AppLocalizations.supportedLocales
+      .map((locale) => locale.languageCode)
+      .toSet();
+  final deviceLanguageCode = WidgetsBinding.instance.platformDispatcher.locales
+      .map((locale) => locale.languageCode)
+      .firstWhere(supportedLanguageCodes.contains, orElse: () => 'en');
+  await settingsmodel.load(defaultLanguageCode: deviceLanguageCode);
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider.value(value: settingsmodel),
-    ],
-    child: const MyApp(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider.value(value: settingsmodel)],
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  static void setLocale(BuildContext context, Locale newLocale) {
-    final _MyAppState? state =
-    context.findAncestorStateOfType<_MyAppState>();
-    state?.setLocale(newLocale);
-  }
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale('en');
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSavedLocale();
-  }
-
-  void _loadSavedLocale() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedLanguage = prefs.getString('selectedLanguageCode');
-    if (savedLanguage != null) {
-      setLocale(Locale(savedLanguage));
-    }
-  }
-
-  void setLocale(Locale locale) {
-    setState(() {
-      _locale = locale;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     SettingsModel settings = Provider.of<SettingsModel>(context);
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-      systemNavigationBarContrastEnforced: true,
-      systemNavigationBarColor: Colors.transparent,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarDividerColor: Colors.transparent,
+        systemNavigationBarContrastEnforced: true,
+        systemNavigationBarColor: Colors.transparent,
+      ),
+    );
 
     final defaultLightColorScheme = ColorScheme.fromSeed(
-        seedColor: const Color.fromARGB(255, 17, 75, 243));
+      seedColor: const Color.fromARGB(255, 17, 75, 243),
+    );
 
     final defaultDarkColorScheme = ColorScheme.fromSeed(
-        seedColor: const Color.fromARGB(255, 17, 75, 243),
-        brightness: Brightness.dark);
+      seedColor: const Color.fromARGB(255, 17, 75, 243),
+      brightness: Brightness.dark,
+    );
 
     return DynamicColorBuilder(
       builder: (lightColorScheme, darkColorScheme) {
@@ -91,8 +66,7 @@ class _MyAppState extends State<MyApp> {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
-          locale: _locale,
-
+          locale: Locale(settings.selectedLanguageCode),
 
           // TEMI
           theme: ThemeData(
@@ -118,7 +92,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -147,25 +120,6 @@ class _MyHomePageState extends State<MyHomePage> {
     EnergyConv(),
     TipConv(),
   ];
-  final _pageTitles = {
-    StdCalc: StdCalc.pageTitle,
-    //SciCalc: SciCalc.pageTitle,
-    TimeCalc: TimeCalc.pageTitle,
-    DateCalc: DateCalc.pageTitle,
-    AngleConv: AngleConv.pageTitle,
-    TemperatureConv: TemperatureConv.pageTitle,
-    DataConv: DataConv.pageTitle,
-    TimeConv: TimeConv.pageTitle,
-    AreaConv: AreaConv.pageTitle,
-    LengthConv: LengthConv.pageTitle,
-    VolumeConv: VolumeConv.pageTitle,
-    MassConv: MassConv.pageTitle,
-    PressureConv: PressureConv.pageTitle,
-    SpeedConv: SpeedConv.pageTitle,
-    PowerConv: PowerConv.pageTitle,
-    EnergyConv: EnergyConv.pageTitle,
-    TipConv: TipConv.pageTitle
-  };
   int selectedIndex = 0;
 
   Route _createRoute(Widget widget) {
@@ -185,14 +139,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    String appBarText = _pageTitles[_pages[selectedIndex].runtimeType] ?? '';
+    final l10n = AppLocalizations.of(context)!;
+    final pageTitles = [
+      l10n.standard,
+      l10n.time,
+      l10n.date,
+      l10n.angle,
+      l10n.temperature,
+      l10n.data,
+      l10n.time,
+      l10n.area,
+      l10n.length,
+      l10n.volume,
+      l10n.mass,
+      l10n.pressure,
+      l10n.speed,
+      l10n.power,
+      l10n.energy,
+      l10n.tip,
+    ];
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarText),
+        title: Text(pageTitles[selectedIndex]),
         actions: [
           IconButton(
-            onPressed: () =>
-                Navigator.push(context, _createRoute(SettingsPage(calculator: const StdCalc()))),
+            onPressed: () => Navigator.push(
+              context,
+              _createRoute(SettingsPage(calculator: const StdCalc())),
+            ),
             icon: const Icon(Icons.settings_outlined),
           ),
         ],
@@ -225,7 +199,6 @@ class _MyHomePageState extends State<MyHomePage> {
             label: Text(AppLocalizations.of(context)!.scientific),
           ),
           */
-
           NavigationDrawerDestination(
             icon: const Icon(Icons.more_time_outlined),
             selectedIcon: const Icon(Icons.more_time),
@@ -315,8 +288,6 @@ class _MyHomePageState extends State<MyHomePage> {
             selectedIcon: const Icon(Icons.monetization_on),
             label: Text(AppLocalizations.of(context)!.tip),
           ),
-
-
         ],
       ),
     );
