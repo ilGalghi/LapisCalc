@@ -107,6 +107,7 @@ Noutăți:
 # Build dell'app bundle per il rilascio
 flutter build appbundle --release
 ```
+flutter build apk --release --split-per-abi
 
 Il file AAB sarà creato in: `build/app/outputs/bundle/release/app-release.aab`
 

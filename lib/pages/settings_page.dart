@@ -7,7 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lapiscalc/l10n/app_localizations.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -269,37 +268,14 @@ class SettingsPage extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.star),
                   title: Text(AppLocalizations.of(context)!.leaveReview),
+                  // Plain link instead of in_app_review: keeps the app free of
+                  // the proprietary Play Core library (required by F-Droid/IzzyOnDroid).
                   onTap: () async {
-                    final InAppReview inAppReview = InAppReview.instance;
-                    inAppReview.openStoreListing(
-                      appStoreId: '...',
-                      microsoftStoreId: '...',
-                    );
+                    const url =
+                        'https://play.google.com/store/apps/details?id=com.ilgalghi.lapiscalc';
+                    await launchUrl(Uri.parse(url),
+                        mode: LaunchMode.externalApplication);
                   },
-
-                  // NORMALE LINK ----------------------------------------------
-                  /*
-                  onTap: () async {
-                    const url = 'https://play.google.com/store/apps/details?id=com.ilgalghi.lapiscalc';
-                      if (!await launchUrl(Uri.parse(url),
-                      mode: LaunchMode.externalApplication)) {
-                        throw Exception('Could not launch $url');
-                      }
-                  },
-                  */
-                  //------------------------------------------------------------
-
-                  /*
-                  //https://pub.dev/packages/in_app_review
-                  onTap: () async {
-
-                      final InAppReview inAppReview = InAppReview.instance;
-                      if (await inAppReview.isAvailable()) {
-                        inAppReview.requestReview();
-                      }
-                  }
-                   */
-                  //------------------------------------------------------------
                 ),
 
                 //DONATIONS ----------------------------------------------------

@@ -1,0 +1,1 @@
+- Rimossa la dipendenza proprietaria Google Play Core: il pulsante "Lascia una recensione" ora apre direttamente la pagina dello Store.

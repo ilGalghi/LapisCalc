@@ -1,0 +1,18 @@
+<b>LapisCalc</b> è una calcolatrice e un convertitore di unità semplice ed elegante, con interfaccia Material Design 3. Gratuita, open source, senza pubblicità e senza raccolta di dati.
+
+<b>Funzionalità</b>
+<ul>
+<li><b>Calcolatrice standard</b> con aritmetica esatta: numeri grandi e calcoli concatenati mantengono la piena precisione.</li>
+<li><b>Percentuali</b>, comprese quelle commerciali e ripetute.</li>
+<li><b>Cronologia dei calcoli</b> per rivedere e riutilizzare i risultati precedenti.</li>
+<li><b>Calcolo date</b>: differenza tra due date, oppure aggiunta/sottrazione di giorni.</li>
+<li><b>Convertitore di unità</b>: angoli, tempo, dati, lunghezza, area, volume e altro.</li>
+<li><b>Calcolo mance</b>.</li>
+<li>Tema chiaro/scuro e colori dinamici Material You.</li>
+<li>Disponibile in italiano, inglese, spagnolo, francese e rumeno.</li>
+</ul>
+
+<b>Privacy</b>
+Nessuna pubblicità, nessun tracker, nessuna analisi. LapisCalc funziona completamente offline e non raccoglie alcun dato personale.
+
+Codice sorgente: https://github.com/ilGalghi/LapisCalc (GPLv3)

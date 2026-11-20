@@ -1,0 +1,18 @@
+<b>LapisCalc</b> is a simple, elegant calculator and unit converter with a Material Design 3 interface. Free, open source, ad-free, and it collects no data.
+
+<b>Features</b>
+<ul>
+<li><b>Standard calculator</b> with exact arithmetic: large numbers and chained calculations keep full precision.</li>
+<li><b>Percentages</b>, including commercial and repeated percentages.</li>
+<li><b>Calculation history</b> to review and reuse previous results.</li>
+<li><b>Date calculator</b>: difference between two dates, or add/subtract days.</li>
+<li><b>Unit converter</b>: angle, time, data, length, area, volume and more.</li>
+<li><b>Tip calculator</b>.</li>
+<li>Light/dark theme and Material You dynamic colors.</li>
+<li>Available in English, Italian, Spanish, French and Romanian.</li>
+</ul>
+
+<b>Privacy</b>
+No ads, no trackers, no analytics. LapisCalc works fully offline and does not collect any personal data.
+
+Source code: https://github.com/ilGalghi/LapisCalc (GPLv3)
