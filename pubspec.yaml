@@ -3,7 +3,7 @@ description: "A simple calculator and unit converter app with Material Design 3.
 
 publish_to: 'none'
 
-version: 1.2.2+11
+version: 1.2.3+12
 
 environment:
   sdk: '>=3.12.0 <4.0.0'

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.3] - 2026-11-20
+### Changed
+- **Dependencies**: Removed `in_app_review` and with it the proprietary Google Play Core library, so the app contains only free and open-source components (required for IzzyOnDroid/F-Droid distribution).
+- **Settings**: The "Leave a review" button now opens the Play Store page directly via `url_launcher`. Behavior is unchanged for users.
+
+### Added
+- **Store Metadata**: Added Fastlane metadata (`fastlane/metadata/android/`) in English and Italian with title, descriptions, icon, screenshots and changelogs, used by IzzyOnDroid and F-Droid.
+
 ## [1.2.2] - 2026-09-13
 ### Fixed
 - **Standard Calculator**: Replaced floating-point arithmetic with exact rational arithmetic to prevent large numbers from losing digits or gaining trailing zeros (e.g. `123456789123456767` remains unchanged after pressing `=`).

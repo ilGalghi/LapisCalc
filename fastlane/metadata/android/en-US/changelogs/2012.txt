@@ -1,0 +1,1 @@
+- Removed the proprietary Google Play Core dependency: the "Leave a review" button now opens the store page directly.
